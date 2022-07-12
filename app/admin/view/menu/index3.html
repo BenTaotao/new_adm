@@ -1,0 +1,839 @@
+{__NOLAYOUT__}
+{include file="public/page_header" /} <!--头部公共区域-->
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+<!--        <blockquote class="layui-elem-quote">-->
+<!--            Layui的树形表格tabletree，支持固定列、layui-soul-table。<br>-->
+<!--            <a href="https://gitee.com/layui-extension/layui-tabletree" target="_blank"-->
+<!--               class="layui-btn layui-btn-danger">tabletree</a>-->
+<!--        </blockquote>-->
+        <div>
+            <div class="layui-btn-group">
+                <button class="layui-btn" id="btn-expandaaa">全部展开</button>
+                <button class="layui-btn layui-btn-normal" id="btn-foldaaa">全部折叠</button>
+            </div>
+            <table id="currentTable" class="layui-table" lay-filter="currentTable"></table>
+        </div>
+    </div>
+</div>
+<!-- 操作列 -->
+<script type="text/html" id="auth-statessssss">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+{include file="public/page_footer" /} <!--尾部公共区域-->
+<!--<script src="/static/admin/jquery/jquery-3.6.0.min.js"></script>-->
+<script>
+    layui.config({
+        base: "/static/admin/layui_extend/tabletree/" //配置 layui 第三方扩展组件存放的基础目录
+    }).extend({
+        tabletree: 'tabletree/tabletree'
+    }).use('tabletree');
+    layui.use(['layer', 'form', 'jquery', 'tabletree'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var tabletree = layui.tabletree;
+
+        // 渲染表格
+        layer.load(2);
+        var dataJson = [
+            {
+                "authorityId": 1,
+                "authorityName": "系统管理",
+                "orderNumber": 1,
+                "menuUrl": null,
+                "menuIcon": "layui-icon-set",
+                "createTime": "2018/06/29 11:05:41",
+                "authority": null,
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 0,
+                "parentId": -1
+            },
+            {
+                "authorityId": 2,
+                "authorityName": "用户管理",
+                "orderNumber": 2,
+                "menuUrl": "system/user",
+                "menuIcon": null,
+                "createTime": "2018/06/29 11:05:41",
+                "authority": null,
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 0,
+                "parentId": 1
+            },
+            {
+                "authorityId": 3,
+                "authorityName": "查询用户",
+                "orderNumber": 3,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/07/21 13:54:16",
+                "authority": "user:view",
+                "checked": 0,
+                "updateTime": "2018/07/21 13:54:16",
+                "isMenu": 1,
+                "parentId": 2
+            },
+            {
+                "authorityId": 4,
+                "authorityName": "添加用户",
+                "orderNumber": 4,
+                "menuUrl": null,
+                "menuIcon": null,
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "user:add",
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 1,
+                "parentId": 2
+            },
+            {
+                "authorityId": 5,
+                "authorityName": "修改用户",
+                "orderNumber": 5,
+                "menuUrl": null,
+                "menuIcon": null,
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "user:edit",
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 1,
+                "parentId": 2
+            },
+            {
+                "authorityId": 6,
+                "authorityName": "删除用户",
+                "orderNumber": 6,
+                "menuUrl": null,
+                "menuIcon": null,
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "user:delete",
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 1,
+                "parentId": 2
+            },
+            {
+                "authorityId": 7,
+                "authorityName": "角色管理",
+                "orderNumber": 7,
+                "menuUrl": "system/role",
+                "menuIcon": null,
+                "createTime": "2018/06/29 11:05:41",
+                "authority": null,
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 0,
+                "parentId": 1
+            },
+            {
+                "authorityId": 8,
+                "authorityName": "查询角色",
+                "orderNumber": 8,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/07/21 13:54:59",
+                "authority": "role:view",
+                "checked": 0,
+                "updateTime": "2018/07/21 13:54:58",
+                "isMenu": 1,
+                "parentId": 7
+            },
+            {
+                "authorityId": 9,
+                "authorityName": "添加角色",
+                "orderNumber": 9,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "role:add",
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 1,
+                "parentId": 7
+            },
+            {
+                "authorityId": 10,
+                "authorityName": "修改角色",
+                "orderNumber": 10,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "role:edit",
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 1,
+                "parentId": 7
+            },
+            {
+                "authorityId": 11,
+                "authorityName": "删除角色",
+                "orderNumber": 11,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "role:delete",
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 1,
+                "parentId": 7
+            },
+            {
+                "authorityId": 12,
+                "authorityName": "角色权限管理",
+                "orderNumber": 12,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "role:auth",
+                "checked": 0,
+                "updateTime": "2018/07/13 15:27:18",
+                "isMenu": 1,
+                "parentId": 7
+            },
+            {
+                "authorityId": 13,
+                "authorityName": "权限管理",
+                "orderNumber": 13,
+                "menuUrl": "system/authorities",
+                "menuIcon": null,
+                "createTime": "2018/06/29 11:05:41",
+                "authority": null,
+                "checked": 0,
+                "updateTime": "2018/07/13 15:45:13",
+                "isMenu": 0,
+                "parentId": 1
+            },
+            {
+                "authorityId": 14,
+                "authorityName": "查询权限",
+                "orderNumber": 14,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/07/21 13:55:57",
+                "authority": "authorities:view",
+                "checked": 0,
+                "updateTime": "2018/07/21 13:55:56",
+                "isMenu": 1,
+                "parentId": 13
+            },
+            {
+                "authorityId": 15,
+                "authorityName": "添加权限",
+                "orderNumber": 15,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "authorities:add",
+                "checked": 0,
+                "updateTime": "2018/06/29 11:05:41",
+                "isMenu": 1,
+                "parentId": 13
+            },
+            {
+                "authorityId": 16,
+                "authorityName": "修改权限",
+                "orderNumber": 16,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/07/13 09:13:42",
+                "authority": "authorities:edit",
+                "checked": 0,
+                "updateTime": "2018/07/13 09:13:42",
+                "isMenu": 1,
+                "parentId": 13
+            },
+            {
+                "authorityId": 17,
+                "authorityName": "删除权限",
+                "orderNumber": 17,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/06/29 11:05:41",
+                "authority": "authorities:delete",
+                "checked": 0,
+                "updateTime": "2018/06/29 11:05:41",
+                "isMenu": 1,
+                "parentId": 13
+            },
+            {
+                "authorityId": 18,
+                "authorityName": "登录日志",
+                "orderNumber": 18,
+                "menuUrl": "system/loginRecord",
+                "menuIcon": null,
+                "createTime": "2018/06/29 11:05:41",
+                "authority": null,
+                "checked": 0,
+                "updateTime": "2018/06/29 11:05:41",
+                "isMenu": 0,
+                "parentId": 1
+            },
+            {
+                "authorityId": 19,
+                "authorityName": "查询登录日志",
+                "orderNumber": 19,
+                "menuUrl": "",
+                "menuIcon": "",
+                "createTime": "2018/07/21 13:56:43",
+                "authority": "loginRecord:view",
+                "checked": 0,
+                "updateTime": "2018/07/21 13:56:43",
+                "isMenu": 1,
+                "parentId": 18
+            }
+        ]
+        var dataJson2 = [
+            {
+            "id": 1,
+            "name": "admin/admin/index",
+            "title": "管理员",
+            "module": "admin",
+            "controller": "Admin",
+            "action": "index",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 32,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 3,
+            "name": "admin/admin/add",
+            "title": "新增",
+            "module": "admin",
+            "controller": "Admin",
+            "action": "add",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 1,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 4,
+            "name": "admin/admin/edit",
+            "title": "修改",
+            "module": "admin",
+            "controller": "Admin",
+            "action": "edit",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 1,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 5,
+            "name": "admin/admin/del",
+            "title": "删除",
+            "module": "admin",
+            "controller": "Admin",
+            "action": "del",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 1,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 6,
+            "name": "admin/admin/uppass",
+            "title": "改密",
+            "module": "admin",
+            "controller": "Admin",
+            "action": "uppass",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 1,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 7,
+            "name": "admin/auth/index",
+            "title": "权限组",
+            "module": "admin",
+            "controller": "Auth",
+            "action": "index",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 32,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 9,
+            "name": "admin/auth/add",
+            "title": "新增",
+            "module": "admin",
+            "controller": "Auth",
+            "action": "add",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 7,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 10,
+            "name": "admin/auth/edit",
+            "title": "修改",
+            "module": "admin",
+            "controller": "Auth",
+            "action": "edit",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 7,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 11,
+            "name": "admin/auth/del",
+            "title": "删除",
+            "module": "admin",
+            "controller": "Auth",
+            "action": "del",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 7,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 12,
+            "name": "admin/auth/rule",
+            "title": "规则",
+            "module": "admin",
+            "controller": "Auth",
+            "action": "rule",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 7,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 13,
+            "name": "admin/auth/rule_save",
+            "title": "规则保存",
+            "module": "admin",
+            "controller": "Auth",
+            "action": "rule_save",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 7,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 14,
+            "name": "admin/database/index",
+            "title": "数据库管理",
+            "module": "admin",
+            "controller": "Database",
+            "action": "index",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 34,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 16,
+            "name": "admin/database/add",
+            "title": "新增",
+            "module": "admin",
+            "controller": "Database",
+            "action": "add",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 14,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 17,
+            "name": "admin/database/edit",
+            "title": "修改",
+            "module": "admin",
+            "controller": "Database",
+            "action": "edit",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 14,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 18,
+            "name": "admin/database/del",
+            "title": "删除",
+            "module": "admin",
+            "controller": "Database",
+            "action": "del",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 14,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 19,
+            "name": "admin/index/#",
+            "title": "首页1",
+            "module": "admin",
+            "controller": "Index",
+            "action": "#",
+            "status": 0,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 0,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 20,
+            "name": "admin/index/index1",
+            "title": "首页2",
+            "module": "admin",
+            "controller": "Index",
+            "action": "index1",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 19,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 21,
+            "name": "admin/index/index2",
+            "title": "首页3",
+            "module": "admin",
+            "controller": "Index",
+            "action": "index2",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 19,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 22,
+            "name": "admin/index/index3",
+            "title": "首页4",
+            "module": "admin",
+            "controller": "Index",
+            "action": "index3",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 19,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 23,
+            "name": "admin/menu/index",
+            "title": "菜单列表",
+            "module": "admin",
+            "controller": "Menu",
+            "action": "index",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 32,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 24,
+            "name": "admin/menu/add",
+            "title": "新增",
+            "module": "admin",
+            "controller": "Menu",
+            "action": "add",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 23,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 25,
+            "name": "admin/menu/edit",
+            "title": "修改",
+            "module": "admin",
+            "controller": "Menu",
+            "action": "edit",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 23,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 26,
+            "name": "admin/menu/del",
+            "title": "删除",
+            "module": "admin",
+            "controller": "Menu",
+            "action": "del",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 23,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 27,
+            "name": "admin/user/index",
+            "title": "用户列表",
+            "module": "admin",
+            "controller": "User",
+            "action": "index",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 33,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 29,
+            "name": "admin/user/add",
+            "title": "新增",
+            "module": "admin",
+            "controller": "User",
+            "action": "add",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 27,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 30,
+            "name": "admin/user/edit",
+            "title": "修改",
+            "module": "admin",
+            "controller": "User",
+            "action": "edit",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 27,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 31,
+            "name": "admin/user/del",
+            "title": "删除",
+            "module": "admin",
+            "controller": "User",
+            "action": "del",
+            "status": 1,
+            "condition": "",
+            "type": 1,
+            "level": 0,
+            "parent": 27,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 32,
+            "name": "admin/auth/#",
+            "title": "权限管理",
+            "module": "admin",
+            "controller": "Auth",
+            "action": "#",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 0,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 33,
+            "name": "admin/user/#",
+            "title": "用户管理",
+            "module": "admin",
+            "controller": "User",
+            "action": "#",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 0,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 34,
+            "name": "admin/#/#",
+            "title": "系统设置",
+            "module": "admin",
+            "controller": "#",
+            "action": "#",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 0,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 35,
+            "name": "admin/test/#",
+            "title": "测试菜单",
+            "module": "admin",
+            "controller": "Test",
+            "action": "#",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 0,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 36,
+            "name": "admin/test/index1",
+            "title": "测试菜单2",
+            "module": "admin",
+            "controller": "Test",
+            "action": "index1",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 35,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 37,
+            "name": "admin/test/index2",
+            "title": "测试菜单3",
+            "module": "admin",
+            "controller": "Test",
+            "action": "index2",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 36,
+            "icon": "",
+            "sort": 0
+        }, {
+            "id": 38,
+            "name": "admin/test/index3",
+            "title": "测试菜单3",
+            "module": "admin",
+            "controller": "Test",
+            "action": "index3",
+            "status": 1,
+            "condition": "",
+            "type": 0,
+            "level": 0,
+            "parent": 37,
+            "icon": "",
+            "sort": 0
+        }];
+        tabletree.render({
+            treeColIndex: 1,
+            treeSpid: -1,
+            treeIdName: 'id',
+            treePidName: 'parent',
+            elem: '#currentTable',
+            // data: dataJson,
+            url: "{:url('menu/ajaxmenu')}",
+            page: false,
+            cols: [[
+                {field: 'id', width: 70, title: 'ID'},
+                {field: 'title', width: 400, align: 'left', title: '菜单名称',},
+                {field: 'name', title: '控制器/方法', templet: ""},
+                {
+                    width: 120,
+                    title: '图标',
+                    align: 'center',
+                    templet: "<div style='background: #0b2e13;'><i class='iconfont icon-shebei'></i><i class='iconfont {{d.icon}}'></i></div>"
+                },
+                // {field: 'sort', width: 120, title: '排序', edit: 'text'},
+                // { field: 'status', align: 'center', width: 120, title: '状态', templet: '#switchTpl', unresize: true },
+                // { field: 'type', align: 'center', width: 120, title: '类型', templet: '#switchTpl2', unresize: true },
+                // { fixed: 'right', align: 'center', width: 250, title: '操作', toolbar: '#barTool' }
+
+
+                /*下面的是测试数据*/
+                {type: 'numbers', fixed: 'left'},
+                {field: 'authorityName', minWidth: 200, title: '权限名称'},
+                {field: 'authority', title: '权限标识'},
+                {field: 'menuUrl', title: '菜单url'},
+                {field: 'orderNumber', width: 80, align: 'center', title: '排序号'},
+                {
+                	field: 'isMenu', width: 80, align: 'center', templet: function (d) {
+                		if (d.isMenu == 1) {
+                			return '<span class="layui-badge layui-bg-gray">按钮</span>';
+                		}
+                		if (d.parentId == -1) {
+                			return '<span class="layui-badge layui-bg-blue">目录</span>';
+                		} else {
+                			return '<span class="layui-badge-rim">菜单</span>';
+                		}
+                	}, title: '类型'
+                },
+                {templet: '#auth-statessssss', width: 120, align: 'center', title: '操作', fixed: 'right'}
+            ]],
+            done: function () {
+                layer.closeAll('loading');
+            }
+        });
+
+        $('#btn-expandaaa').click(function () {
+            tabletree.expandAll('#currentTable');
+        });
+
+        $('#btn-foldaaa').click(function () {
+            tabletree.foldAll('#currentTable');
+        });
+
+        //监听工具条
+        table.on('tool(currentTable)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+
+            if (layEvent === 'del') {
+                layer.msg('删除' + data.id);
+            } else if (layEvent === 'edit') {
+                layer.msg('修改' + data.id);
+            }
+        });
+    });
+</script>
+

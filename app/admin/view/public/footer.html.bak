@@ -1,0 +1,121 @@
+
+</div>
+</div>
+</div>
+<script type="text/javascript" src="/static/admin_xunjian/js/bootstrap.js"></script>
+<script type="text/javascript" src="/static/admin_xunjian/js/echarts.min.js"></script>
+<script src="/static/admin_xunjian/js/echarts.js"></script>
+<script src="/static/admin/layui/layui.js"></script>
+<script language="javascript" type="text/javascript">
+    // 排行无缝滚动
+    window.onload = roll(50);
+
+    function roll(t) {
+        var ul1 = document.getElementById("ul1");
+        var ul2 = document.getElementById("ul2");
+        var box = document.getElementById("box");
+        ul2.innerHTML = ul1.innerHTML;
+        box.scrollTop = 0;
+        var timer = setInterval(rollStart, t);
+        box.onmouseover = function() {
+            clearInterval(timer);
+        }
+        box.onmouseout = function() {
+            timer = setInterval(rollStart, t);
+        }
+    }
+
+    function rollStart() {
+        if (box.scrollTop >= ul1.scrollHeight) {
+            box.scrollTop = 0;
+        } else {
+            box.scrollTop++;
+        }
+    }
+</script>
+<script type="text/javascript">
+
+    /*菜单点击事件*/
+    $('.panel-heading a').click(function() {
+        $(this).children('.arrow').toggleClass('open');
+        $(this).parents().siblings().children('a').children('.arrow').removeClass('open');
+
+        /*菜单赋值*/
+        var tmp = $(this).attr("data-url");
+        var tmp_name = $(this).text();
+        if (tmp != undefined) {
+            addTab(tmp_name, tmp)
+        }
+    });
+
+    // 添加选项卡
+    function addTab(name, url) {
+
+        if($("#header_tag li[title='"+name+"']").length > 0) {
+            $("#header_tag").children('li').removeClass("active_window_active");
+            $("#header_tag").children('li').css('font-weight','400');
+            $("#header_tag li[title='"+name+"']").addClass("active_window_active");
+            $("#header_tag li[title='"+name+"']").css('font-weight','800');
+
+            //选项卡已经存在--切换选项卡
+            $("#content section").css('display','none');
+            $("#content section[title='"+name+"']").css('display','block');
+
+        } else {
+            $li = '<li class=" header-title active_window_active" title="'+name+'" style="font-weight: 800;">' +
+                '<a >'+name+'' +
+                '<i class="iconfont icon-cuohao icon_close"></i>' +
+                '</a>' +
+                '</li>';
+            $("#header_tag").children('li').removeClass('active_window_active');
+            $("#header_tag").children('li').css('font-weight','400');
+            $("#header_tag").append($li);
+            //动态控制iframe高度
+            var tabheight = layui.jquery(window).height() - 175;
+            contentTxt = '<iframe src="' + url + '" scrolling="yes" frameborder="0" width="100%" height="' + (tabheight) + 'px"></iframe>';
+            //新增一个Tab项
+            var content = "<section class='content' title="+name+">" +contentTxt+ "</section>"
+            $("#content section").css('display','none');
+            $("#content").append(content);
+        }
+    }
+
+    $(document).click(function(e) { // 在页面任意位置点击而触发此事件
+        var title = '';
+        title = $(e.target).parent().attr("title");       // e.target表示被点击的目标
+        var name = $(e.target).parent().prop("tagName");       // e.target表示被点击的目标
+        /*这里是标签之前切换的*/
+        if (name=='LI' && title != undefined) {
+            /*首先移除标签上的一些属性*/
+            $("#header_tag").children('li').removeClass("active_window_active");
+            $("#header_tag").children('li').css('font-weight','400');
+            /*添加class和字体加粗*/
+            $("#header_tag li[title='"+title+"']").addClass("active_window_active");
+            $("#header_tag li[title='"+title+"']").css('font-weight','800');
+            /*这里先隐藏其他标签的内容---再显示本标签的内容*/
+            $("#content section").css('display','none');
+            $("#content section[title='"+title+"']").css('display','block');
+        }
+        /*关闭标签页*/
+        var title_close = $(e.target).parent().parent().attr("title");
+        var name_close = $(e.target).prop("tagName");
+        var name_close_parent = $(e.target).parent().prop("tagName");
+        if (name_close=='I' && name_close_parent == 'A' && title_close !=undefined){
+            /*移除标签和标签的内容*/
+            $("#content section[title='"+title_close+"']").remove();
+            $("#header_tag li[title='"+title_close+"']").remove();
+            var ifactive =  $("#header_tag li[class='active_window_active']").text();
+            if (!ifactive){
+                $li_length = $("#header_tag li").length
+                $("#header_tag li:last-child").addClass("active_window_active");
+                var last_title = $("#header_tag li:last-child").prop("title")
+                $("#content section[title='"+last_title+"']").css('display','block');
+            }
+        }
+
+    })
+
+</script>
+</body>
+
+</html>

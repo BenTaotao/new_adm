@@ -1,0 +1,181 @@
+{include file="public/page_header" /} <!--头部公共区域-->
+
+<div class="layui-layout layui-layout-admin" style="margin: 20px;">
+    <form action="" class="layui-form">
+        <div class="layui-form-item clearfix">
+            <label class="layui-form-label">父级菜单</label>
+            <div class="layui-input-block">
+                <select name="parent" lay-verify="required" lay-filter="rule-select">
+                    <option value="0">无父级菜单</option>
+                    {foreach name = "first_menu" item = "vo"}
+                    <option value="{$vo.id}" {if condition="!empty($data) && $data['id']==$vo['id']" }selected{/if}>{$vo.title}---{$vo.name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required lay-verify="required" autocomplete="off"
+                       class="layui-input input-w">
+            </div>
+        </div>
+<!--        <div class="layui-form-item">-->
+<!--            <label class="layui-form-label">菜单URL</label>-->
+<!--            <div class="layui-input-block">-->
+<!--                <input type="text" name="name" required lay-verify="required" autocomplete="off"-->
+<!--                       class="layui-input input-w">-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">应用</label>
+            <div class="layui-input-block">
+                <input type="text" name="module" value="{$module}" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">控制器</label>
+            <div class="layui-input-block">
+                <select name="controller" autocomplete="off" lay-filter="controller">
+                    <option value="#">---</option>
+                    {volist name="controller" id="vo" key="k"}
+                    <option value="{$vo}" >{$vo}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">方法</label>
+            <div class="layui-input-block">
+                <select name="action" id="action" lay-filter="action" autocomplete="off">
+                    <option value="#">---</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型-默认菜单</label>
+            <div class="layui-input-block">
+                <!--<input type="checkbox" name="type" lay-skin="switch" lay-text="按钮|菜单">-->
+                <input type="radio" name="type" value="0" lay-verify="required" autocomplete="off" title="菜单" checked>
+                <input type="radio" name="type" value="1" lay-verify="required" autocomplete="off" title="按钮">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开关-默认开</label>
+            <div class="layui-input-block">
+                <!--<input type="checkbox" name="status" value="0" checked lay-skin="switch" lay-text="开|关">-->
+                <input type="radio" name="status" value="1" lay-verify="required" autocomplete="off" title="开" checked>
+                <input type="radio" name="status" value="0" lay-verify="required" autocomplete="off" title="关">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input type="number" name="sort" value="0" required lay-verify="required" autocomplete="off"
+                       class="layui-input input-w">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图标</label>
+            <div class="layui-input-inline input-group iconpicker-container">
+<!--                <input type="number" name="icon" required autocomplete="off"-->
+<!--                       class="layui-input input-w">-->
+                <span class="input-group-addon">123<i class="fa fa-pencil"></i></span>
+                <input maxlength="30" id="icon" name="icon"
+                       value="fa-list" class="layui-input"
+                       placeholder="请输入图标class">
+            </div>
+        </div>
+
+<!--        <div class="form-group">-->
+<!--            <label for="icon" class="col-sm-2 control-label">图标</label>-->
+<!--            <div class="col-sm-10 col-md-4">-->
+<!--                <div class="input-group iconpicker-container">-->
+<!--                    <span class="input-group-addon"><i class="fa fa-pencil"></i></span>-->
+<!--                    <input maxlength="30" id="icon" name="icon"-->
+<!--                           value="fa-list" class="form-control "-->
+<!--                           placeholder="请输入图标class">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-tijiao" lay-submit lay-filter="formDemo" style="background: #5470c6;">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/static/admin/iconpicker/js/iconpicker.min.js" charset="utf-8"></script>
+
+
+{include file="public/page_footer" /} <!--尾部公共区域-->
+
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form;
+        form.on('select(controller)', function(data){
+            var controller = data.value;
+            if (controller) {
+                $.ajax({
+                    type : "POST",  //提交方式
+                    url : "{:url('menu/getActionList')}",//路径
+                    data : {controller:controller},
+                    dataType: "json",
+                    success: function(data){
+                        console.log(data);
+                        var html = '';
+                        $.each(data.data,function (index,item) {
+                            html += '<option value="'+item+'">'+item+'</option>';
+                        });
+                        $("#action").append(html);
+                        form.render();
+                    }
+                });
+            }
+        });
+        // form.on('switch(buttons)', function(data){
+        //     if(this.checked){
+        //         this.value = 1;
+        //     }else{
+        //         this.value = 0;
+        //     }
+        // });
+        // form.on('switch(switchs)', function(data){
+        //     if(this.checked){
+        //         this.value = 0;
+        //     }else{
+        //         this.value = 1;
+        //     }
+        // });
+        //监听提交 getActionList
+        form.on('submit(formDemo)', function(data){
+            var dataParam = $("form").serializeArray();
+            $.ajax({
+                type : "POST",  //提交方式
+                // url : "{:url('/admin/auth/menu_add')}",//路径
+                url : "{:url('menu/add')}",//路径
+                data : dataParam,
+                dataType: "json",
+                success: function(data){
+                    console.log(data)
+                    top.layer.msg(data.msg)
+                    if(data.code == 0){
+                        setTimeout(function () {
+                            $(window.parent.document).find("iframe")[0].contentWindow.location.reload(true);
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        }, 2000);
+
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<script>
+    $('#icon').iconpicker({placement: 'bottomLeft'});
+</script>

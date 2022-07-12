@@ -1,0 +1,92 @@
+{include file="public/page_header" /} <!--头部公共区域-->
+
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-container">
+        <div class="layui-row layui-tree" style="margin:20px;">
+            <div id="test1" data-id = {$id}></div>
+        </div>
+        <div class="layui-row" style="margin:20px;">
+            <button class="layui-btn layui-btn-danger" id="submit">修改</button>
+        </div>
+    </div>
+</div>
+
+{include file="public/page_footer" /} <!--尾部公共区域-->
+
+<script type="text/javascript">
+    var options;
+    var tree;
+    $(document).ready(function(){
+        var id = $("#test1").attr('data-id');
+        $.ajax({
+            type : "POST",  //提交方式
+            url : "{:url('auth/rule')}",//路径
+            data : {id,id},
+            dataType: "json",
+            success: function(data){
+                if(data.code === 0){
+                    options = data.data;
+                    layui.use('tree', function(){
+                        tree = layui.tree;
+                        //渲染
+                        var inst1 = tree.render({
+                            elem: '#test1'  //绑定元素
+                            ,data: options
+                            ,showCheckbox:true
+                            ,accordion:true
+                            ,onlyIconControl:true
+                            ,id:"treeId"
+                            // ,showLine:false
+                        });
+                    });
+                }else{
+                    top.layer.msg('获取失败！')
+                }
+            }
+        })
+    })
+    $('#submit').click(function(){
+        var checkData = tree.getChecked("treeId");
+        // return false;
+        if(checkData.length === 0){
+            top.layer.alert("请至少选中一条数据");
+
+        }else{
+            // var id_arr = [];
+            //
+            // for (x in checkData){
+            //     id_arr.push(checkData[x].id)
+            //     if(checkData[x].hasOwnProperty("children")){
+            //         for(i in checkData[x]["children"]){
+            //             id_arr.push(checkData[x]["children"][i].id);
+            //             if(checkData[x].hasOwnProperty("children")){
+            //                 for(j in checkData[x]["children"]){
+            //                     id_arr.push(checkData[x]["children"][j].id);
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
+            $.ajax({
+                type : "POST",  //提交方式
+                url : "{:url('auth/rule_save')}",//路径
+                data : {
+                    "id_arr":checkData,
+                    "id":$("#test1").attr("data-id")
+                },
+                dataType : 'json',
+                success: function(data){
+                    if(data.code == 0){
+                        layer.msg(data.msg,{time:1000},function(){
+                            parent.layer.closeAll();
+                            parent.window.location.reload()
+                        })
+                    }else{
+                        top.layer.msg(data.msg);
+                    }
+                }
+            })
+        }
+    });
+</script>
+

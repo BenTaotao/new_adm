@@ -1,0 +1,35 @@
+{include file="public/page_header" /} <!--头部公共区域-->
+
+<div class="layui-layout layui-layout-admin">
+    <form action="" class="layui-form" style="margin-top: 20px;">
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 30%">表名(无前缀)</label>
+            <div class="layui-input-inline">
+                <input type="text" name="table_name" required  lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 30%">数据库引擎</label>
+            <div class="layui-input-inline">
+                <select name="engine" lay-verify="required">
+                    <option value="InnoDB">InnoDB</option>
+                    <option value="MyISAM">MyISAM</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <button class="layui-btn" lay-submit lay-filter="formDemo" style="display: none" id="formDemo">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="public/page_footer" /} <!--尾部公共区域-->
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form;
+
+    });
+</script>

@@ -1,0 +1,278 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="/static/admin/layui272/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/admin/common/font/iconfont.css?v={$Think.config.version.yzncms_release}">
+<!--    <script src="/static/admin/libs/layui/layui.js"></script>-->
+    <script src="/static/admin/layui272/layui.js"></script>
+    <script src="/static/admin/libs/jquery/jquery.min.js"></script>
+    <style>
+        /*.layui-breadcrumb, .layui-tree-btnGroup{*/
+        /*    visibility: initial !important;*/
+        /*}*/
+
+        .layui-tree-entry{
+            font-size: 16px;
+            height: 30px;
+        }
+        .layui-btn.btn_edit{
+            background: #1caf9a;
+            height: 24px;
+            line-height: 24px;
+            border-radius: 4px;
+            padding: 0 10px;
+        }
+        .layui-btn.btn_del{
+            background: #ee6666;
+            height: 24px;
+            line-height: 24px;
+            border-radius: 4px;
+            padding: 0 10px;
+        }
+        .layui-btn.btn_add{
+            background: #5470c6;
+            height: 24px;
+            line-height: 24px;
+            border-radius: 4px;
+            padding: 0 10px;
+        }
+        .layui-table-tool-temp i.iconfont{
+            font-size: 15px;
+        }
+        .layui-table-tool-temp .layui-btn-sm{
+            line-height: 26px;
+        }
+        .layui-table-tool-temp .layui-btn{
+            border-radius: 4px;
+            background-color: #1caf9a;
+        }
+        .layui-table-tool-temp .layui-btn-normal{
+            background-color: #5470c6;
+        }
+        .layui-form-onswitch {
+            border-color: #1caf9a;
+            background-color: #1caf9a;
+        }
+        .laytable-cell-10001-3{
+            text-align: left;
+        }
+        .laytable-cell-10001-status{
+            text-align: left;
+        }
+        .laytable-cell-10001-type{
+            text-align: left;
+        }
+        .laytable-cell-10001-7{
+            text-align: left;
+        }
+    </style>
+</head>
+<body style="background: rgb(248, 249, 251); margin: 20px;">
+<section style="background: #fff; padding: 20px;">
+
+<div class="layui-card">
+    <div class="layui-card-header">菜单管理</div>
+    <div class="layui-card-body">
+        <div class="layui-form">
+            <table class="layui-hide" id="currentTable" lay-filter="currentTable"></table>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-table-tool-temp">
+        <button class="layui-btn layui-btn-sm yzn-btn-primary" data-treetable-refresh="currentTable"><i class="iconfont icon-shuaxin1"></i></button>
+        <button class="layui-btn layui-btn-sm" data-open="{:url('menu/add')}" title="添加"><i class="iconfont icon-add"></i>&nbsp;新增后台菜单</button>
+        <button class="layui-btn layui-btn-sm layui-btn-normal" id="openAll"><i class="iconfont icon-add"></i>&nbsp;展开或折叠全部</button>
+    </div>
+</script>
+<script type="text/html" id="barTool">
+    <a onclick="editMenu({{ d.id }})" class="layui-btn layui-btn-xs  btn_edit" title="编辑">编辑</a>
+    <a onclick="addMenu({{ d.id }})" class="layui-btn layui-btn-xs layui-btn-normal  btn_add" title="添加">添加</a>
+    <a onclick="delMenu({{ d.id }})" class="layui-btn layui-btn-danger layui-btn-xs  btn_del">删除</a> <!--layui-tr-del-->
+</script>
+<script type="text/html" id="switchTpl">
+    <input type="checkbox" name="status" lay-skin="switch" lay-text="显示|隐藏" value="{{d.id}}" lay-filter="switchStatus" {{ d.status==1 ? 'checked value="1"' : ' value="0"' }}>
+</script>
+<script type="text/html" id="switchTpl2">
+    <input type="checkbox" name="type" lay-skin="switch" lay-text="按钮|菜单" value="{{d.id}}" lay-filter="switchType" {{ d.type==1 ? 'checked value="1"' : ' value="0"' }}>
+</script>
+
+</section>
+</body>
+</html>
+<script type="text/javascript">
+    layui.config({
+        base: '/static/admin/libs/layui_exts/'
+    }).extend({
+        yzn: 'yzn/yzn',
+        yznForm: 'yznForm/yznForm',
+        yznTable: 'yznTable/yznTable',
+        treeGrid: 'treeGrid/treeGrid',
+        clipboard: 'clipboard/clipboard',
+        notice: 'notice/notice',
+        iconPicker: 'iconPicker/iconPicker',
+        tableSelect: 'tableSelect/tableSelect',
+        ztree: 'ztree/ztree',
+        dragsort: 'dragsort/dragsort',
+        tagsinput: 'tagsinput/tagsinput',
+        xmSelect: 'xmSelect/xm-select',
+        selectPage: 'selectPage/selectpage',
+        echarts: 'echarts/echarts',
+        echartsTheme: 'echarts/echartsTheme',
+        citypicker: 'citypicker/city-picker',
+        webuploader: 'webuploader/webuploader',
+        ueditor: 'ueditor/ueditor.min',
+    }).use('yznForm');
+</script>
+<script>
+var treeGrid = null;
+layui.use(['table', 'treeGrid', 'yznTable','form'], function() {
+    var $ = layui.$,
+        treeGrid = layui.treeGrid,
+        tableId = 'currentTable',
+        yznTable = layui.yznTable,
+        form = layui.form,
+        ptable = null;
+    var init = {
+        table_elem: '#currentTable',
+    };
+    var renderTable = function() {
+        treeGrid.render({
+            id: tableId,
+            elem: init.table_elem,
+            toolbar: '#toolbarDemo',
+            idField: 'id',
+            url: "{:url('menu/index')}",
+            cellMinWidth: 100,
+            treeId: 'id', //树形id字段名称
+            treeUpId: 'parent', //树形父id字段名称
+            treeShowName: 'title', //以树形式显示的字段
+            height: 'full-140',
+            isFilter: false,
+            iconOpen: false, //是否显示图标【默认显示】
+            isOpenDefault: false, //节点默认是展开还是折叠【默认展开】
+            onDblClickRow: false, //去除双击事件
+            // @todo 不直接使用yznTable.render(); 进行表格初始化, 需要使用 yznTable.formatCols(); 方法格式化`cols`列数据
+            cols: yznTable.formatCols([
+                [
+                    { field: 'id', width: 70, title: 'ID' },
+                    { field: 'title', width:400, align: 'left', title: '菜单名称', },
+                    { field: 'name', title: '控制器/方法', templet: "" },
+                    { width: 120, title: '图标', align: 'center', templet: "<div style='background: #0b2e13;'><i class='iconfont icon-shebei'></i><i class='iconfont {{d.icon}}'></i></div>" },
+                    { field: 'sort', width: 120, title: '排序', edit: 'text' },
+                    { field: 'status', align: 'center', width: 120, title: '状态', templet: '#switchTpl', unresize: true },
+                    { field: 'type', align: 'center', width: 120, title: '类型', templet: '#switchTpl2', unresize: true },
+                    { fixed: 'right', align: 'center', width: 250, title: '操作', toolbar: '#barTool' }
+                ]
+            ], init),
+        });
+    }
+    renderTable();
+    $('#openAll').click(function(e) {
+        var that = this;
+        var treedata = treeGrid.getDataTreeList(tableId);
+        console.log(treedata);
+        treeGrid.treeOpenAll(tableId, !treedata[0][treeGrid.config.cols.isOpen]);
+        var show = $("i", that).hasClass("icon-add");
+        $("i", that).toggleClass("icon-add", !show);
+        $("i", that).toggleClass("icon-min", show);
+    })
+    $('body').on('click', '[data-treetable-refresh]', function() {
+        renderTable();
+    });
+     //监听单元格编辑
+     treeGrid.on('edit(currentTable)', function(obj) {
+         var value = obj.value,
+             data = obj.data;
+         $.post('{:url("menu/edit")}', {'id': data.id,'sort':value}, function(data) {
+             layer.msg(data.msg);
+         })
+     });
+
+    //监听指定开关
+    form.on('switch(switchStatus)', function(obj){
+        var id = obj.value;
+        var status;
+        if(this.checked){
+            status = 0;
+        }else{
+            status = 1;
+        }
+        $.post('{:url("menu/edit")}', {'id': id,'status':status}, function(data) {
+            top.layer.msg(data.msg);
+        })
+    });
+    //监听指定开关
+    form.on('switch(switchType)', function(obj){
+        var id = obj.value;
+        var type;
+        if(this.checked){
+            type = 1;
+        }else{
+            type = 0;
+        }
+        $.post('{:url("menu/edit")}', {'id': id,'type':type}, function(data) {
+            top.layer.msg(data.msg);
+        })
+    });
+
+});
+
+function addMenu(id=0){
+    var url,title
+    url = "{:url('menu/add')}?id=" + id;
+    title = '新增菜单';
+    top.layer.open({
+        type: 2
+        , title: title
+        , area: ['800px', '700px']
+        , shade: 0
+        , content: url
+        ,id:'LAY_layuipro'
+    });
+}
+
+function editMenu(id){
+    var url,title
+    url = "{:url('menu/edit')}?id=" + id;
+    title = '修改菜单';
+    top.layer.open({
+        type: 2
+        , title: title
+        , area: ['800px', '700px']
+        , shade: 0
+        , content: url
+        ,id:'LAY_layuipro'
+    });
+}
+
+function delMenu(id) {
+    top.layer.confirm('删除之后无法恢复，确定要删除吗？',{
+        btn:['确定','取消']
+        ,btn2:function (index) {
+            layer.close(index)
+        }
+    },function (index) {
+        $.ajax({
+            type: "POST",  //提交方式
+            url: "{:url('menu/del')}?id=" + id,//路径
+            data: $('form').serialize(),
+            dataType: "json",
+            success: function (data) {
+                top.layer.msg(data.msg)
+                if (data.code == 0) {
+                    setTimeout(function () {
+                        $(window.parent.document).find("iframe")[0].contentWindow.location.reload(true);
+                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                        parent.layer.close(index);
+                    }, 2000);
+                }
+            }
+        })
+    })
+}
+</script>

@@ -1,0 +1,139 @@
+</div>
+</div>
+</div>
+</div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+<!--        <div style="text-align: center;">作者：Taotao；QQ：1573027560</div>-->
+    </div>
+</div>
+
+
+<script src="/static/admin/layui272/layui.js"></script>
+<script src="/static/admin/layui_extend/notify/notify.js"></script>
+<script src="/static/admin/jquery/jquery-3.6.0.min.js"></script>
+
+<script>
+    layui.config({
+        base: "/static/admin/layui_extend/tabletree/" //配置 layui 第三方扩展组件存放的基础目录
+    }).extend({
+        tabletree: 'tabletree/tabletree'
+    }).use('tabletree');
+    //JavaScript代码区域
+    layui.use(['layer', 'form', 'jquery', 'element', 'dropdown','notify'], function () {
+        var layer = layui.layer
+            , form = layui.form
+            , $ = layui.jquery
+            , element = layui.element
+            , util = layui.util
+            , dropdown = layui.dropdown
+            , notify = layui.notify
+            ;
+
+        $(".layui-tab ul").children('li').first().children('.layui-tab-close').css("display", 'none');
+        //菜单点击事件
+        dropdown.on('click(demo1)', function (options) {
+            var thisElem = $(this);
+            // console.log(thisElem, options);
+        });
+
+
+        util.event('lay-active', {
+            normal: function () {
+                $('#demo-box').children().addClass('layui-col-md3').removeClass('layui-col-md4');
+                $('#demo-box').find('.layui-menu').removeClass('layui-menu-lg');
+            }
+            , lg: function () {
+                $('#demo-box').children().addClass('layui-col-md4').removeClass('layui-col-md3')
+                $('#demo-box').find('.layui-menu').addClass('layui-menu-lg');
+            }
+        });
+
+        $("#left_menu a").click(function () {
+            var tmp = $(this).attr("data-url");
+            var tmp_name = $(this).text();
+            // notify.success("自定义消息")
+            // notify.info("这是一条自动义消息", "topRight");
+            if (tmp != undefined) {
+                addTab(tmp_name, tmp)
+            }
+        });
+        $("#header_menu a").click(function () {
+            var tmp = $(this).attr("data-url");
+            var tmp_name = $(this).text();
+            if (tmp != undefined) {
+                addTab(tmp_name, tmp)
+            }
+        });
+        //监听导航点击
+        element.on('nav(tabContent)', function (elem) {
+            //console.log(elem)
+            layer.msg(elem.text());
+        });
+
+        /*修改密码*/
+        $("#update_pwd").click(function () {
+            var $id = "{$admin_info['id']}";
+            var index = layer.open({
+                title: "修改密码",
+                type: 2,
+                id: "layer_updatepassword",
+                area: ['600px', '600px'],
+                content: "{:url('admin/uppass')}?id=" + $id,
+            });
+        });
+
+    });
+
+    // 添加选项卡
+    function addTab(name, url) {
+        if (layui.jquery(".layui-tab-title li[lay-id='" + name + "']").length > 0) {
+            //选项卡已经存在
+            layui.element.tabChange('tabContent', name);
+        } else {
+            //动态控制iframe高度
+            var tabheight = layui.jquery(window).height() - 175;
+            contentTxt = '<iframe src="' + url + '" scrolling="yes" frameborder="0" width="100%" height="' + (tabheight) + 'PX"></iframe>';
+            //新增一个Tab项
+            layui.element.tabAdd('tabContent', {
+                title: name,
+                content: contentTxt,
+                id: name
+            })
+            //切换刷新
+            layui.element.tabChange('tabContent', name)
+        }
+    }
+
+    /*左侧菜单隐藏显示的点击事件*/
+    $("#show-menu").on('click', function () {
+        let btn = $("#show-menu");
+        if (btn.hasClass('show-menu')) {
+            btn.removeClass(' show-menu').addClass('hide-menu');
+            $("#left_menu").animate({width: 'toggle'});  //toggle如果原来div是隐藏的就会把元素显示，如果原来是显示则隐藏
+            $("#header_menu").css({display: 'block'});
+            $(".layui-body").animate({left: '0'});
+        } else {
+            btn.removeClass('hide-menu').addClass('show-menu');
+            $("#left_menu").animate({width: 'toggle'});
+            $("#header_menu").css({display: 'none'});
+            $(".layui-body").animate({left: '200px'});
+        }
+    })
+
+    var panel_height = $(document).height() - 62; /*62是顶部菜单60加上边框2的高度*/
+    $(".layui-panel").css('height', panel_height);
+
+    function chat() {
+        layer.open({
+            type: 2,
+            title: "在线客服",
+            id:"layer_chat",
+            area: ['800px', '600px'],
+            content: "{:url('/admin/chat/index')}",
+        });
+    }
+</script>
+</body>
+</html>
