@@ -5,9 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title></title>
-    <link rel="stylesheet" href="/static/admin/layui272/css/layui.css" media="all">
-
-    <!--    <link rel="stylesheet" type="text/css" href="/static/httpchat/css/chat.css">-->
     <link rel="stylesheet" type="text/css" href="/static/httpchat/font_Icon/iconfont.css">
 
     <script src="/static/admin/jquery/jquery-3.6.0.min.js"></script>
@@ -422,36 +419,7 @@
     var ld=myDate.toLocaleDateString();	//获取当前日期
     var msgdate=year+'-'+mon+'-'+da+' '+h+':'+m+':'+s;
 
-    screenFuc();
-    function screenFuc() {
-        // var topHeight = $(".chatBox-head").innerHeight();//聊天头部高度
-        // //屏幕小于768px时候,布局change
-        // var winWidth = $(window).innerWidth();
-        // if (winWidth <= 768) {
-        //     var totalHeight = $(window).height(); //页面整体高度
-        //     $(".chatBox-info").css("height", totalHeight - topHeight);
-        //     var infoHeight = $(".chatBox-info").innerHeight();//聊天头部以下高度
-        //     //中间内容高度
-        //     $(".chatBox-content").css("height", infoHeight - 46);
-        //     $(".chatBox-content-demo").css("height", infoHeight - 46);
-        //
-        //     // $(".chatBox-list").css("height", totalHeight - topHeight);
-        //     // $(".chatBox-kuang").css("height", totalHeight - topHeight);
-        //     $(".div-textarea").css("width", winWidth - 106);
-        // } else {
-        //     // $(".chatBox-info").css("height", 495);
-        //     $(".div-user").css("height", 549);
-        //     $(".chatBox-content").css("height", 498);
-        //     $(".chatBox-content-demo").css("height", 370);
-        //     // $(".chatBox-list").css("height", 495);
-        //     // $(".chatBox-kuang").css("height", 495);
-        //     $(".div-textarea").css("width", 490);
-        // }
-    }
-    (window.onresize = function () {
-        screenFuc();
-    })();
-
+    
 
     var from_id = "{$from_id}";
     var to_id = "{$to_id}";
@@ -474,7 +442,6 @@
             //赋值头像
             myavatars = $(this).children('img').eq(0).attr("src");
             // //传头像
-            // $(".ChatInfoHead>img").attr("src", $(this).children('img').eq(0).attr("src"));
 
             //聊天框默认最底部
             $(document).ready(function () {
@@ -518,9 +485,7 @@
         // console.log("打开: "+sockState());
         var bild = '{"type":"bind","uid":"' + from_id + '"}';
         webSocket.send(bild);
-        // console.log("已发送绑定: "+bild);
-        // webSocket.send(JSON.stringify(bild));
-        // document.getElementById("msg").innerHTML = "<p>连接到服务</p>";
+      
         setInterval(function () {
             webSocket.send('heartbeat');    //发送内容不限，只是为了证明客户端还没关闭还在线
         }, 20000)                    //50秒发一次
@@ -567,15 +532,7 @@
         var status = ['未连接', '连接成功，可通讯', '正在关闭', '连接已关闭或无法打开'];
         return status[webSocket.readyState];
     }
-    //单人聊天
-    // function start(event) {
-    //     var text = document.getElementById('text').value;
-    //     var msg = '{"type":"text","mode":"single","from_id":"' + from_id + '","to_id":"' + to_id + '","content":"' + text + '"}';
-    //     webSocket.send(msg);
-    //     document.getElementById('text').value = '';
-    //     $("#group_message").append("<div style='text-align: right;'>我是" + from_id + "：" + text + "</div>");
-    //
-    // }
+   
     function close(event) {
         webSocket.close();
     }
@@ -605,14 +562,6 @@
         }
     });
 
-
-    // //打开/关闭聊天框
-    // $(".chatBtn").click(function () {
-    //     $(".chatBox").toggle(10);
-    // })
-    // $(".chat-close").click(function () {
-    //     $(".chatBox").toggle(10);
-    // })
 
 
     //      发送信息

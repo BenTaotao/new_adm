@@ -4,26 +4,37 @@
 namespace app\index\controller;
 
 use think\exception\Handle;
+use think\facade\Db;
 
-class Test{
+class Test
+{
 
 
     public function index()
     {
 
+
+        #百万数据插入
+        $data = self::addData();
+
+        foreach ($data as $item) {
+            Db::name('testbigdata')->insert($item);
+        }
+        echo 'end';
+
         #这里是测试写入文件的
         // $this->textWrite();
         // echo 'end';
-        
-        #这里测试读取文件
-        $content = self::readText();
 
-        foreach ($content as $item) {
-            echo $item..'<br />';
-            #这里打印读取的文件，每次读取一行；但是测试的过程中出现了意外，导致无法读取
+        // #这里测试读取文件
+        // $content = self::readText();
 
-        }
-        
+        // foreach ($content as $item) {
+        //     echo $item . '<br />';
+        //     #这里打印读取的文件，每次读取一行；但是测试的过程中出现了意外，导致无法读取
+
+        // }
+
 
         // $myValues = self::getValues2(); // 一旦我们调用函数将会在这里创建数组
         // $myValues = self::getValues(); // 在循环之前都不会有动作
@@ -34,7 +45,7 @@ class Test{
         //    if (($value % 200000) == 0) {
         //     //    return $value . "\r\n" ;
         //     //    echo $value."\r\n";
-            //    dump($value);
+        //    dump($value);
         //    }
         // } // 开始生成数据
         // // return $value."\r\n" ;
@@ -74,9 +85,10 @@ class Test{
     }
 
 
-    public function textWrite(){
-        
-        
+    public function textWrite()
+    {
+
+
         for ($i = 1; $i < 800000; $i++) {
             // yield $i;
             // 做性能分析，因此可测量内存使用率
@@ -85,23 +97,41 @@ class Test{
             //       echo round(memory_get_usage() / 1024 / 1024, 2) . ' MB'. PHP_EOL;
             //    }
 
-            file_put_contents('C:\Users\Administrator\Desktop\test.txt',"这是第 ". $i ." 行内容\r\n",FILE_APPEND);
+            file_put_contents('C:\Users\Administrator\Desktop\test.txt', "这是第 " . $i . " 行内容\r\n", FILE_APPEND);
         }
-
     }
 
     public static function readText()
     {
-        $handle = fopen('C:\Users\Administrator\Desktop\123.txt',"r");
+        $handle = fopen('C:\Users\Administrator\Desktop\123.txt', "r");
 
-        while(!feof($handle)){
+        while (!feof($handle)) {
 
             // yield fgets($handle);
-            yield fgets($handle)."<br>";//fgets()函数从文件指针中读取一行
+            yield fgets($handle) . "<br>"; //fgets()函数从文件指针中读取一行
         }
         fclose($handle);
     }
+
+    public static function addData()
+    {
+
+        $data = [
+            'address' => '西安市雁塔区高新路与科技路交叉口',
+            'create_time' => date('Y-m-d H:i:s', time()),
+            'email' => 'baixiantao@.com',
+            'iphone' => '18829025239',
+            'name' => '白宪涛',
+            'status' => '正常',
+            'update_time' => date('Y-m-d H:i:s', time()),
+        ];
+        for ($i = 1; $i < 1000000; $i++) {
+            yield $data;
+            // 做性能分析，因此可测量内存使用率
+            //    if (($i % 200000) == 0) {
+            //       // 内存使用以 MB 为单位
+            //       echo round(memory_get_usage() / 1024 / 1024, 2) . ' MB'. PHP_EOL;
+            //    }
+        }
+    }
 }
-
-
-

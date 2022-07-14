@@ -617,15 +617,7 @@
         var status = ['未连接', '连接成功，可通讯', '正在关闭', '连接已关闭或无法打开'];
         return status[webSocket.readyState];
     }
-    //单人聊天
-    // function start(event) {
-    //     var text = document.getElementById('text').value;
-    //     var msg = '{"type":"text","mode":"single","from_id":"' + from_id + '","to_id":"' + to_id + '","content":"' + text + '"}';
-    //     webSocket.send(msg);
-    //     document.getElementById('text').value = '';
-    //     $("#group_message").append("<div style='text-align: right;'>我是" + from_id + "：" + text + "</div>");
-    //
-    // }
+  
     function close(event) {
         webSocket.close();
     }
@@ -654,15 +646,6 @@
             $(this).css("padding", 0);
         }
     });
-
-
-    // //打开/关闭聊天框
-    // $(".chatBtn").click(function () {
-    //     $(".chatBox").toggle(10);
-    // })
-    // $(".chat-close").click(function () {
-    //     $(".chatBox").toggle(10);
-    // })
 
 
     //      发送信息
