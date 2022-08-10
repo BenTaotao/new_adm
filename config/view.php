@@ -27,7 +27,7 @@ return [
         'STATIC'=>'/static',
     ],
 	//开启布局
-	'layout_on'     =>  true,
+	'layout_on'     =>  false,
 	//布局文件名称
 	'layout_name'   =>  'layout',
 ];

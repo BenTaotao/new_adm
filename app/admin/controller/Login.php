@@ -69,7 +69,7 @@ class Login
 				);
 				
 				Db::name('admin')->where(['id' => $admin_info['id']])->update($data_update);
-				
+				// Db::name('admin')->where(['id' => $admin_info['id']])->inc();
 				#记录登录日志
 				Db::name('admin_log')->insert(['admin_id' => $admin_info['id'], 'type' => 1, 'content' => '[' . $admin_info['admin_name'] . '] 登录', 'create_time' => time(), 'ip' => get_client_ip_rewrite()]);
 				session('admin_info', $admin_info);

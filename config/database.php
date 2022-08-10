@@ -27,7 +27,7 @@ return [
             // 用户名
             'username' => env('database.username', 'tp_admin'),
             // 密码
-            'password' => env('database.password', '8eCmW7dAt6jHGpXn'),
+            'password' => env('database.password', 'tp_admin'),
             // 端口
             'hostport' => env('database.hostport', '3306'),
             // 数据库连接参数

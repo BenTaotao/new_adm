@@ -36,6 +36,9 @@
 <!--md5-->
 {js href="/static/admin/login/js/md5.js" /}
 <script type="text/javascript">
+    if (window != top){
+        top.window.location.href='/admin/login/index';
+    }
     $(document).keydown(function (event) {
 
         var enter = event.KeyCode || window.event.KeyCode;  //如果点击的为Ctrl键，ctrl为true

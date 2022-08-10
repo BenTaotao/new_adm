@@ -18,7 +18,7 @@ class Test
         $data = self::addData();
 
         foreach ($data as $item) {
-            Db::name('testbigdata')->insert($item);
+            Db::name('testbigdata')->insertAll($item);
         }
         echo 'end';
 
@@ -120,8 +120,8 @@ class Test
             'address' => '西安市雁塔区高新路与科技路交叉口',
             'create_time' => date('Y-m-d H:i:s', time()),
             'email' => 'baixiantao@.com',
-            'iphone' => '18829025239',
-            'name' => '白宪涛',
+            'iphone' => '18888888888',
+            'name' => '白聚义',
             'status' => '正常',
             'update_time' => date('Y-m-d H:i:s', time()),
         ];

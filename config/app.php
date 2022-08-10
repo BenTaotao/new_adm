@@ -18,7 +18,7 @@ return [
     //多应用
     'auto_multi_app'   => true,
     // 默认应用
-    'default_app'      => 'admin',
+    'default_app'      => 'index',
     // 默认时区
     'default_timezone' => 'Asia/Shanghai',
     // 应用映射（自动多应用模式有效）

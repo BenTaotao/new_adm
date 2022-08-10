@@ -5,6 +5,7 @@ namespace app\index\controller;
 
 use think\api\Client;
 use think\cache\driver\Redis;
+use think\facade\Request;
 use think\facade\View;
 use Sha2;
 
@@ -14,7 +15,21 @@ class Index
 	public function index()
 	{
 
-
+        // app() -> getRootPath(); //获取应用根目录
+        // app() -> getNamespace(); //获取应用类库命名空间
+        // app() -> version(); //获取框架版本
+        // app() -> getBasePath(); //获取应用基础目录
+        // app() -> getAppPath(); //获取当前应用目录
+        // app() -> getThinkPath(); //获取核心框架目录
+        // app() -> getConfigPath(); //获取应用配置目录
+        //
+        // halt(app()->getRootPath(),
+        //     app()->getNamespace(),
+        //     app()->version(),
+        //     app()->getBasePath(),
+        //     app()->getAppPath(),
+        //     app()->getThinkPath(),
+        //     app()->getConfigPath());
 		// hash_hmac('','','','');
 		#这里是hash加密的
 		// $password = 123;
@@ -51,13 +66,82 @@ class Index
 		// return json($result);
 
 		#这里是测试redist的
-		$redis = new Redis();
-		$redis->set('name', '这是测试redis的文件132');
-		$gets = $redis->get('name');
-		return json($gets);
+		// $redis = new Redis();
+		// $redis->set('name', '这是测试redis的文件132');
+		// $gets = $redis->get('name');
+		// return json($gets);
 
 		#这里测试php的yield操作
 		
 		// return json("此处为index应用");
+
+
+        return View::fetch();
 	}
+
+    public function tron_pdf()
+    {
+        $id = input('id');
+        $file_names = input('file_name');
+        // dump($id);
+        // $pdf_url = "https://pdfs.junkexinxi.com/nginx_12.pdf";
+        // $pdf_url = "http://localhost/static/index/file/nginx_12.pdf";
+
+        $file_name    = '/static/index/file/'.$file_names.'.pdf';
+        #新文件名称
+        $newfile_name = '/static/index/file/'.$file_names.'_'.$id.'.pdf';
+
+        $pdf_url = request()->domain() . $newfile_name;
+        // $pdf_url = request()->domain() . $file_name;
+        #判断文件是否存在
+        if (file_exists(app()->getRootPath().'public'.$newfile_name)){
+            return ajaxTable(0,'',$pdf_url);
+        }
+
+        #如果不存在则复制文件
+        $cp_path1 = app()->getRootPath().'/public'.$file_name;
+        $cp_path2 = app()->getRootPath().'/public'.$newfile_name;
+
+        if(copy($cp_path1, $cp_path2)){
+            chmod($cp_path2, 0777);
+            return ajaxTable(0,'',$pdf_url);
+        }else{
+            return ajaxTable(1,'打开失败','');
+        }
+
+        // return ajaxTable(0,'',$pdf_url);
+    }
+
+    public function tron_pdf_save(){
+
+        $files_name = input('files_name');
+        $file_name = input('file_name');
+        $id = input('uid');
+        // $newfile_name = '/static/index/file/'.$file_name.$id.'.pdf';
+        // $newfile_name = '/static/index/file/'.$file_name.$id;
+
+        // $file_name = substr($file_name, 0,-4);
+
+        $newfile_name = $file_name.'_'.$id.'.pdf';
+        // $newfile_name = $file_name.'_'.$id;
+        $path = app()->getRootPath().'public/static/index/file/'.$newfile_name;
+
+        $file = request()->file('files');
+        // 上传到本地服务器
+        $savename = \think\facade\Filesystem::putFile('/static/index/file/', $file, $newfile_name);
+
+        $tmp_url = app()->getRootPath() . 'runtime/storage/'.$savename;
+        $pub_url = app()->getRootPath() . 'public/static/index/file/'.$newfile_name;
+
+        rename($tmp_url, $pub_url);
+        chmod($pub_url, 0777);
+        // file_put_contents($path, $file,FILE_APPEND | LOCK_EX);
+        // if(copy(app()->getRootPath().'/'.$savename, app()->getRootPath().'/public/static/index/file/'.$newfile_name)){
+        //     return ajaxTable(0,'保存成功');
+        // }else{
+        //     return ajaxTable(1,'保存失败');
+        // }
+        return json(['msg'=>'保存成功']);
+
+    }
 }
