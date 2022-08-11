@@ -18,6 +18,7 @@ ThinkPHP 6.0
 > 后台账号： admin 123456
 
 
+### _部署时首先使用`composer update`更新项目依赖_
 
 ##nginx伪静态
 ```md
