@@ -148,7 +148,7 @@ class Common
 			'type' => 2,
 			'content' => $content,
 			'create_time' => time(),
-			'ip' => get_client_ip_rewrite()
+			'ip' => get_client_ip()
 		];
 		Db::name('admin_log')->insert($data);
 	}

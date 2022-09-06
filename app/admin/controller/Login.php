@@ -63,7 +63,7 @@ class Login
 				session('Admin_outime', $outime);//登录过期时间  默认登录1小时过期
 				session('Admin_lasttime', time()); //最近操作的时间
 				$data_update = array(
-					'login_ip' => get_client_ip_rewrite(),
+					'login_ip' => get_client_ip(),
 					'login_time' => time(),
 					'login_str' => $login_str
 				);
@@ -71,7 +71,7 @@ class Login
 				Db::name('admin')->where(['id' => $admin_info['id']])->update($data_update);
 				// Db::name('admin')->where(['id' => $admin_info['id']])->inc();
 				#记录登录日志
-				Db::name('admin_log')->insert(['admin_id' => $admin_info['id'], 'type' => 1, 'content' => '[' . $admin_info['admin_name'] . '] 登录', 'create_time' => time(), 'ip' => get_client_ip_rewrite()]);
+				Db::name('admin_log')->insert(['admin_id' => $admin_info['id'], 'type' => 1, 'content' => '[' . $admin_info['admin_name'] . '] 登录', 'create_time' => time(), 'ip' => get_client_ip()]);
 				session('admin_info', $admin_info);
 				session('login_str', $login_str);
 				return json(['code' => 0, 'msg' => "登录成功"]);

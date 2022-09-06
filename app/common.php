@@ -94,7 +94,7 @@
 //    return $tree;
 //}
 
-function get_client_ip_rewrite()
+function get_client_ip()
 {
     if (getenv('HTTP_CLIENT_IP')) {
         $ip = getenv('HTTP_CLIENT_IP');
@@ -110,6 +110,98 @@ function get_client_ip_rewrite()
         $ip = $_SERVER['REMOTE_ADDR'];
     }
     return $ip;
+}
+
+//PHP返回客户端IP,还不错
+function GetIP(){
+    if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
+        $ip = getenv("HTTP_CLIENT_IP");
+    else if (getenv("HTTP_X_FORWARDED_FOR") && strcasecmp(getenv("HTTP_X_FORWARDED_FOR"), "unknown"))
+        $ip = getenv("HTTP_X_FORWARDED_FOR");
+    else if (getenv("REMOTE_ADDR") && strcasecmp(getenv("REMOTE_ADDR"), "unknown"))
+        $ip = getenv("REMOTE_ADDR");
+    else if (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], "unknown"))
+        $ip = $_SERVER['REMOTE_ADDR'];
+    else
+        $ip = "unknown";
+    return($ip);
+}
+
+/**
+ * 时区：ios:Asia/Shanghai (GMT+8) offset 28800
+ * 安卓：  GMT+08:00
+ * GMT+08  设置时区使用： date_default_timezone_set("Etc/GMT-8");
+ * 时区处理
+ */
+function handle_time_zone($timeZone)
+{
+    if (preg_match('/\+/', $timeZone)) {
+        $mark = "-";
+    } elseif (preg_match("/-/", $timeZone)) {
+        $mark = "+";
+    } else {
+        return ['set_zone' => "Etc/GMT+0", 'rang' => 0];
+    }
+
+    ###取时区
+    preg_match("/GMT[\+|-]\d+/i", $timeZone, $zone);
+
+    if (empty($zone)) {
+        return ['set_zone' => "Etc/GMT+0", 'rang' => 0];
+    }
+
+    ###过滤08为8
+    preg_match("/\d+/", $zone[0], $zone_num);
+    $zone_num = intval($zone_num[0]);
+
+    return ['set_zone' => "Etc/GMT{$mark}{$zone_num}", 'rang' => $mark == "+" ? $zone_num : (0 - $zone_num)];
+    //return "GMT{$mark}{$zone_num}";
+}
+
+#通过ip获取国家和城市
+function ip_zone($ip)
+{
+    $url = "http://ip-api.com/json/{$ip}?lang=zh-CN";
+    $data = curl_ssl($url);
+    if (!$data) {
+        return ['country' => 'API', 'city' => 'ERROR'];
+    }
+
+    $data = json_decode($data, true);
+    if ($data['status'] != 'success') {
+        //return "API CODE ERROR";
+        return ['country' => 'API', 'city' => 'CODE ERROR'];
+    }
+
+    $country = empty($data['country']) ? 'API' : $data['country'];
+    $city = empty($data['city']) ? 'CODE ERROR' : $data['city'];
+    return ['country' => $country, 'city' => $city];
+}
+
+function GetCity(){
+    /**/
+    #一些ip获取城市的接口
+    // http://int.dpool.sina.com.cn/iplookup/iplookup.php //新浪 不可用
+    // http://ip.ws.126.net/ipquery //网易 不可用
+    // http://myip.ustclug.org/ //中科大  不可用
+    // http://ip.taobao.com/service/getIpInfo.php?ip=[ip地址] //淘宝 不可用
+    // http://pv.sohu.com/cityjson?ie=utf-8  #可用
+
+    //远程城市数据返回点
+    $filename = "http://ip.taobao.com/service/getIpInfo.php?ip=".GetIP();
+    // $filename = "http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=".GetIP();
+    // //使用file_get_contents返回json数据,确认程序是否开启file_get_contents
+    $json = json_decode(file_get_contents($filename));
+    // //转换编码，不然会乱码
+    $city=iconv("utf-8","gb2312",$json->data->city);
+
+    // $url = "http://pv.sohu.com/cityjson?ie=utf-8";
+    // $data = curl_ssl($url);
+    //
+    // halt(explode('"', $data));
+    // $city = $data['cname'];
+    //返回城市
+    return $city;
 }
 
 #写日志
@@ -328,58 +420,6 @@ function str_cut_word($text, $length = 500, $tail = "...")
         }
     }
     return $text;
-}
-
-
-/**
- * 时区：ios:Asia/Shanghai (GMT+8) offset 28800
- * 安卓：  GMT+08:00
- * GMT+08  设置时区使用： date_default_timezone_set("Etc/GMT-8");
- * 时区处理
- */
-function handle_time_zone($timeZone)
-{
-    if (preg_match('/\+/', $timeZone)) {
-        $mark = "-";
-    } elseif (preg_match("/-/", $timeZone)) {
-        $mark = "+";
-    } else {
-        return ['set_zone' => "Etc/GMT+0", 'rang' => 0];
-    }
-
-    ###取时区
-    preg_match("/GMT[\+|-]\d+/i", $timeZone, $zone);
-
-    if (empty($zone)) {
-        return ['set_zone' => "Etc/GMT+0", 'rang' => 0];
-    }
-
-    ###过滤08为8
-    preg_match("/\d+/", $zone[0], $zone_num);
-    $zone_num = intval($zone_num[0]);
-
-    return ['set_zone' => "Etc/GMT{$mark}{$zone_num}", 'rang' => $mark == "+" ? $zone_num : (0 - $zone_num)];
-    //return "GMT{$mark}{$zone_num}";
-}
-
-#通过ip获取国家和城市
-function ip_zone($ip)
-{
-    $url = "http://ip-api.com/json/{$ip}?lang=zh-CN";
-    $data = curl_ssl($url);
-    if (!$data) {
-        return ['country' => 'API', 'city' => 'ERROR'];
-    }
-
-    $data = json_decode($data, true);
-    if ($data['status'] != 'success') {
-        //return "API CODE ERROR";
-        return ['country' => 'API', 'city' => 'CODE ERROR'];
-    }
-
-    $country = empty($data['country']) ? 'API' : $data['country'];
-    $city = empty($data['city']) ? 'CODE ERROR' : $data['city'];
-    return ['country' => $country, 'city' => $city];
 }
 
 //二维数组排序

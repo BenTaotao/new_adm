@@ -95,8 +95,11 @@ class Menu extends Common
 			$data = input();
 			$id = $data['id'];
 			unset($data['s']);
-			$data['name'] = $data['module'].'/'.$data['controller'].'/'.$data['action'];
-			$data['name'] = strtolower($data['name']);
+            if (isset($data['module'])){
+                $data['name'] = $data['module'].'/'.$data['controller'].'/'.$data['action'];
+                $data['name'] = strtolower($data['name']);
+            }
+
 			$res = Db::name('auth_rule')->where('id', $id)->update($data);
 			if (empty($res)) {
 				return ajaxTable(1);

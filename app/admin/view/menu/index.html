@@ -198,9 +198,9 @@ layui.use(['table', 'treeGrid', 'yznTable','form'], function() {
         var id = obj.value;
         var status;
         if(this.checked){
-            status = 0;
-        }else{
             status = 1;
+        }else{
+            status = 0;
         }
         $.post('{:url("menu/edit")}', {'id': id,'status':status}, function(data) {
             top.layer.msg(data.msg);
