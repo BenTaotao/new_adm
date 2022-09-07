@@ -1,0 +1,59 @@
+{include file="public/page_header" /} <!--头部公共区域-->
+
+<div class="layui-layout layui-layout-admin">
+    <form action="" class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" required  lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">昵称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="nickname" required  lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">权限组</label>
+            <div class="layui-input-block">
+                {foreach name = "manage_list" item = "vo"}
+                <input type="checkbox" name="powers[]" value="{$vo.id}" lay-skin="primary" title="{$vo.name}">
+                {/foreach}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="status" value="0" lay-verify="required" autocomplete="off" title="启用">
+                <input type="radio" name="status" value="1" lay-verify="required" autocomplete="off" title="禁用">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required  lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password2" required  lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <button class="layui-btn" lay-submit lay-filter="formDemo" style="display: none" id="formDemo">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="public/page_footer" /} <!--尾部公共区域-->
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form;
+
+    });
+</script>

@@ -16,37 +16,102 @@ class User extends Common
 	public function index()
 	{
 		if (request()->isAjax()){
-			$user_list = Db::name('user')->select();
-			// $power_team = Db::name('auth_group')->field('id,title')->select();
-			// $power_team = cms_rebuild($power_team, 'id');
-			// foreach ($group_list as $k=>$v) {
-			// 	$v['power_team'] = $power_team[$v['power_team']]['title'];
-			// 	$group_list[$k] = $v;
-			// }
-			//view::assign('group_list', $group_list);
+			$user_list = Db::name('user')->order('id desc')->select();
+		
 			return ajaxTable(0,'',$user_list);
 		}
 		
 		return view::fetch();
 	}
 	
-	#人员添加
 	public function add()
-	{
-		
-		
-		return view::fetch();
-	}
+    {
+        if (request()->isAjax()) {
+            $data = $_POST;
+            $name = $data['name'];
+            unset($data['s']);
+			if ($data['password'] != $data['password2']) {
+				return ajaxTable(1, '两次密码不一致');
+			}
+
+            $info = Db::name('user')->where(['name' => $name])->find();
+            if (isset($info)) {
+                return ajaxTable(0, '已经存在');
+            }
+
+			unset($data['password2']);
+
+            #密码
+            $pass =$data['password'];
+            $data['password'] = password_hash($pass, PASSWORD_DEFAULT);
+			$data['register_time'] = time();
+
+			// halt($data);
+            Db::startTrans();
+            try{
+                Db::name('user')->insert($data);
+                Db::commit();
+                return ajaxTable(0);
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                return ajaxTable(1);
+            }
+
+        }
+        return view::fetch();
+    }
+
+    #人员修改
+    public function edit()
+    {
+        if (request()->isAjax()) {
+            $data = input();
+            $id = $data['id'];
+            unset($data['s']);
+    		#验证两次密码
+			if (isset($data['password']) && !empty($data['password'])) {
+				if ($data['password'] != $data['password2']) {
+					return ajaxTable(1, '两次密码不一致');
+				}
+				unset($data['password2']);
+				#密码盐值
+				$pass = $data['password'];
+				$data['password'] = password_hash($pass, PASSWORD_DEFAULT);
+			} else {
+				unset($data['password']);
+				unset($data['password2']);
+			}
 	
-	#人员修改
-	public function edit()
-	{
-	
-	}
-	
-	#人员删除
-	public function del()
-	{
-	
-	}
+            Db::startTrans();
+            try{
+                Db::name('user')->where(['id' => $id])->update($data);
+                Db::commit();
+                return ajaxTable(0);
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                return ajaxTable(1);
+            }
+        }
+
+        $id = input('id');
+        $data = Db::name('user')->where(['id' => $id])->find();
+        view::assign('data',$data);
+        return view::fetch();
+    }
+
+    #人员删除
+    public function del()
+    {
+        if (request()->isAjax()) {
+            $id = $_POST['id'];
+            $res = Db::name('user')->where(['id' => $id])->delete();
+            if ($res) {
+                return ajaxTable(0);
+            } else {
+                return ajaxTable(1);
+            }
+        }
+    }
 }

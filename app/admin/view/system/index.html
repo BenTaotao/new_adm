@@ -1,0 +1,86 @@
+{include file="public/page_header" /} <!--头部公共区域-->
+<div class="layui-layout layui-layout-admin">
+  <fieldset class="layui-elem-field layui-field-title">
+    <legend>系统设置</legend>
+  </fieldset>
+  <div>
+    <form class="layui-form" action="" id="forms">
+      <div class="layui-form-item">
+        <label class="layui-form-label">网站名称</label>
+        <div class="layui-input-block">
+          <input type="text" name="site_name" lay-verify="title" autocomplete="off" placeholder="网站名称" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">APP名称</label>
+        <div class="layui-input-block">
+          <input type="text" name="site_name_app" lay-verify="title" autocomplete="off" placeholder="网站名称APP" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">PC站名称</label>
+        <div class="layui-input-block">
+          <input type="text" name="site_name_index" lay-verify="title" autocomplete="off" placeholder="PC站名称" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">网站备案</label>
+        <div class="layui-input-block">
+          <input type="text" name="site_icp" lay-verify="title" autocomplete="off" placeholder="网站备案" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">地址</label>
+        <div class="layui-input-block">
+          <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="地址" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">微信小程序id</label>
+        <div class="layui-input-block">
+          <input type="text" name="appid" lay-verify="title" autocomplete="off" placeholder="微信小程序id" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">微信小程序secret</label>
+        <div class="layui-input-block">
+          <input type="text" name="secret" lay-verify="title" autocomplete="off" placeholder="微信小程序secret" class="layui-input">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{include file="public/page_footer" /} <!--尾部公共区域-->
+
+<script type="text/javascript">
+  layui.use('form',function(){
+
+    var form = layui.form;
+    //提交事件
+    form.on('submit(demo1)', function(data){
+      $.ajax({
+        type : "POST",  //提交方式
+        url : "{:url('system/edit')}",//路径
+        data : data,
+        success: function(res){
+          if(res.code === 0){
+            layer.msg('操作成功！')
+            reload();
+          }else{
+            layer.msg('操作失败！')
+          }
+        }
+      })
+    })
+  });
+
+</script>
+
