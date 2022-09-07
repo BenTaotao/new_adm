@@ -28,8 +28,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">状态</label>
             <div class="layui-input-inline">
-                <input type="radio" name="is_delete" value="1" lay-verify="required" autocomplete="off" title="启用" {if $data.is_delete=1}checked{/if}>
-                <input type="radio" name="is_delete" value="0" lay-verify="required" autocomplete="off" title="禁用" {if $data.is_delete=0}checked{/if}>
+                <input type="radio" name="is_delete" value="1" lay-verify="required" autocomplete="off" title="启用" {if $data.is_delete==1}checked{/if}>
+                <input type="radio" name="is_delete" value="0" lay-verify="required" autocomplete="off" title="禁用" {if $data.is_delete==0}checked{/if}>
             </div>
         </div>
         <div class="layui-form-item">
