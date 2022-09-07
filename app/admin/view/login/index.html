@@ -29,6 +29,8 @@
 
 <!-- jQuery -->
 {js href="/static/admin/jquery/jquery-3.6.0.min.js" /}
+{js href="/static/admin/jquery/jquery-cookie.min.js" /}
+
 <!-- layer-->
 {js href="/static/admin/layui272/layui.js" /}
 <!-- ManagerLogin-->
@@ -72,6 +74,13 @@
             dataType: 'json',
             success: function (data) {
                 console.log(data)
+
+                // 这里设置记住密码cookie
+                $.cookie('name', name, { expires: 30 });
+                $.cookie('pass', pass, { expires: 30 });
+
+                // console.log($.cookie());
+
                 if (data.code === 0) {
                     layer.msg(data.msg,{icon:1,time:3000});
                     location.href = "{:url('/admin')}";
@@ -81,6 +90,17 @@
             }
         })
     }
+
+    var names = $.cookie('name');
+    var passs = $.cookie('pass');
+
+    // console.log($.cookie());
+    if(names){
+        $("#user_name").val(names);
+        $("#user_pass").val(passs);
+    }
+
+
 </script>
 </body>
 </html>
