@@ -45,6 +45,7 @@ class Database extends Common
 					)ENGINE={$engine} DEFAULT CHARSET=utf8";
 			$res = Db::query($sql);
 			if (empty($res)) {
+                $this->ULog("添加了数据库表 {$table_name}");
 				return ajaxTable(0, 'success',$res);
 			} else {
 				return ajaxTable(1, 'fail',$res);
@@ -74,6 +75,7 @@ class Database extends Common
 			//"这里写删除数据库表的语句";
 			$res = Db::query("DROP TABLE {$name}");
 			if (empty($res)) {
+                $this->ULog("删除了数据库表 {$name}");
 				return ajaxTable(0, 'success');
 			} else {
 				return ajaxTable(1, 'fail');

@@ -8,43 +8,43 @@
       <div class="layui-form-item">
         <label class="layui-form-label">网站名称</label>
         <div class="layui-input-block">
-          <input type="text" name="site_name" lay-verify="title" autocomplete="off" placeholder="网站名称" class="layui-input">
+          <input type="text" name="site_name" lay-verify="title" value="{$data['site_name']['value']}" autocomplete="off" placeholder="网站名称" class="layui-input">
         </div>
       </div>
       <div class="layui-form-item">
         <label class="layui-form-label">APP名称</label>
         <div class="layui-input-block">
-          <input type="text" name="site_name_app" lay-verify="title" autocomplete="off" placeholder="网站名称APP" class="layui-input">
+          <input type="text" name="site_name_app" lay-verify="title" value="{$data['site_name_app']['value']}" autocomplete="off" placeholder="网站名称APP" class="layui-input">
         </div>
       </div>
       <div class="layui-form-item">
         <label class="layui-form-label">PC站名称</label>
         <div class="layui-input-block">
-          <input type="text" name="site_name_index" lay-verify="title" autocomplete="off" placeholder="PC站名称" class="layui-input">
+          <input type="text" name="site_name_index" lay-verify="title" value="{$data['site_name_index']['value']}" autocomplete="off" placeholder="PC站名称" class="layui-input">
         </div>
       </div>
       <div class="layui-form-item">
         <label class="layui-form-label">网站备案</label>
         <div class="layui-input-block">
-          <input type="text" name="site_icp" lay-verify="title" autocomplete="off" placeholder="网站备案" class="layui-input">
+          <input type="text" name="site_icp" lay-verify="title" value="{$data['site_icp']['value']}" autocomplete="off" placeholder="网站备案" class="layui-input">
         </div>
       </div>
       <div class="layui-form-item">
         <label class="layui-form-label">地址</label>
         <div class="layui-input-block">
-          <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="地址" class="layui-input">
+          <input type="text" name="address" lay-verify="title" value="{$data['address']['value']}" autocomplete="off" placeholder="地址" class="layui-input">
         </div>
       </div>
       <div class="layui-form-item">
         <label class="layui-form-label">微信小程序id</label>
         <div class="layui-input-block">
-          <input type="text" name="appid" lay-verify="title" autocomplete="off" placeholder="微信小程序id" class="layui-input">
+          <input type="text" name="appid" lay-verify="title" value="{$data['appid']['value']}" autocomplete="off" placeholder="微信小程序id" class="layui-input">
         </div>
       </div>
       <div class="layui-form-item">
         <label class="layui-form-label">微信小程序secret</label>
         <div class="layui-input-block">
-          <input type="text" name="secret" lay-verify="title" autocomplete="off" placeholder="微信小程序secret" class="layui-input">
+          <input type="text" name="secret" lay-verify="title" value="{$data['secret']['value']}" autocomplete="off" placeholder="微信小程序secret" class="layui-input">
         </div>
       </div>
 
@@ -66,14 +66,24 @@
     var form = layui.form;
     //提交事件
     form.on('submit(demo1)', function(data){
+      debugger
+      // var datas = JSON.stringify(data.field);
+      // console.log(data.field);
       $.ajax({
         type : "POST",  //提交方式
         url : "{:url('system/edit')}",//路径
-        data : data,
+        data : data.field,
+        dataType : "json",
+        before: function () {
+          layer.load(); //上传loading
+        },
         success: function(res){
           if(res.code === 0){
             layer.msg('操作成功！')
-            reload();
+            setTimeout(function () {
+              window.reload();
+            },2000);
+            return false;
           }else{
             layer.msg('操作失败！')
           }

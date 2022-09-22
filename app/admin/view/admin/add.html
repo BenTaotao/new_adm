@@ -4,19 +4,19 @@
     <form action="" class="layui-form">
         <div class="layui-form-item">
             <label class="layui-form-label">用户名</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="text" name="admin_name" required  lay-verify="required" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="text" name="truename" required  lay-verify="required" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">权限组</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <select name="power_team" lay-verify="required">
                     <option value="">请选择</option>
                     {foreach name = "power_team" item = "vo"}
@@ -27,25 +27,25 @@
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">状态</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="radio" name="is_delete" value="1" lay-verify="required" autocomplete="off" title="启用">
                 <input type="radio" name="is_delete" value="0" lay-verify="required" autocomplete="off" title="禁用">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">密码</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="password" name="admin_pwd" required  lay-verify="required" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">确认密码</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="password" name="admin_pwd2" required  lay-verify="required" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <button class="layui-btn" lay-submit lay-filter="formDemo" style="display: none" id="formDemo">立即提交</button>
             </div>
         </div>

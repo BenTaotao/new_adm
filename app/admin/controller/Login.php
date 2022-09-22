@@ -47,21 +47,22 @@ class Login
 		
 		if (!empty($admin_info)) {
 			if ($is_true) {
-				if ($admin_info['is_delete'] == 1) {
+				if (!$admin_info['is_delete']) {
 					return json(['code' => 1, 'msg' => "该账户已冻结"]);
 				}
 				//登录成功,判断当前用户组是否可以正常登录
 				$auth_group_id = $admin_info['power_team'];
 				//根据权限组ID,查询此权限组赋予的权限
-				$pwoerList = Db::name('auth_group')->field('rules')->where(['id' => $auth_group_id, 'status' => 1])->find();
+				$pwoerList = Db::name('auth_group')->field('rules')
+                    ->where(['id' => $auth_group_id, 'status' => 1])->find();
 				$pwoerList = isset($pwoerList['rules']) ? $pwoerList['rules'] : [];
 				if (empty($pwoerList)) {
 					return json(['code' => 1, 'msg' => "没有权限访问"]);
 				}
 				$outime = time() + 3600;
 				$login_str = md5(date('Y-m-d H:i:s', time()) . rand(1000, 9999));
-				session('Admin_outime', $outime);//登录过期时间  默认登录1小时过期
-				session('Admin_lasttime', time()); //最近操作的时间
+				session('admin.outime', $outime);//登录过期时间  默认登录1小时过期
+				session('admin.lasttime', time()); //最近操作的时间
 				$data_update = array(
 					'login_ip' => get_client_ip(),
 					'login_time' => time(),
@@ -72,8 +73,8 @@ class Login
 				// Db::name('admin')->where(['id' => $admin_info['id']])->inc();
 				#记录登录日志
 				Db::name('admin_log')->insert(['admin_id' => $admin_info['id'], 'type' => 1, 'content' => '[' . $admin_info['admin_name'] . '] 登录', 'create_time' => time(), 'ip' => get_client_ip()]);
-				session('admin_info', $admin_info);
-				session('login_str', $login_str);
+				session('admin.info', $admin_info);
+				session('admin.login_str', $login_str);
 				return json(['code' => 0, 'msg' => "登录成功"]);
 			} else {
 				return json(['code' => 1, 'msg' => "密码错误"]);
@@ -86,8 +87,7 @@ class Login
 	
 	public function login_out()
 	{
-		Session::delete('Admin_outime');
-		Session::delete('admin_info');
+        Session::delete('admin');
 		return redirect('index/index');
 	}
 	

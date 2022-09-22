@@ -88,22 +88,39 @@ function procHtml(array $tree, int $id, int $self_id = 0)
 
 				$html .= "<li>
                                 <div class='layui-menu-body-title'>
-                                    " . $t['title'] . "
+                                    <a href=\"javascript:void(0);\" data-url=\"{$a}\">{$t['title']}</a>
                                 </div>
                             </li>
                             <li class=\"layui-menu-item-divider\"></li>";
 			} else {
-				$group = (string) 'lay-options="{type: ' . '\'group' . '\'}"';
-				$html .= "<li class='layui-menu-item-group layui-menu-item-up' " . $group . ">
+
+                $parent_type = 1;
+                for ($i = 0;$i<count($t['parent']);$i++){
+                    if ($t['parent'][$i]['type'] == 0){
+                        $parent_type = 0;
+                    }
+                }
+                if ($parent_type == 1){
+                    $html .= "<li>
+                                <div class='layui-menu-body-title'>
+                                    <a href=\"javascript:void(0);\" data-url=\"{$a}\">{$t['title']}</a>
+                                </div>
+                            </li>
+                            <li class=\"layui-menu-item-divider\"></li>";
+                }else{
+                    $group = (string) 'lay-options="{type: ' . '\'group' . '\'}"';
+                    $html .= "<li class='layui-menu-item-group layui-menu-item-up' " . $group . ">
                                 <div class='layui-menu-body-title'>
                                     " . $t['title'] . "<i class=\"layui-icon layui-icon-down\"></i>
                                 </div>
                                 <ul>";
 
-				$html .= procHtmlIn($t['parent'], $self_id);
-				$html .= "      </ul>
+                    $html .= procHtmlIn($t['parent'], $self_id);
+                    $html .= "      </ul>
                             </li>
                             <li class=\"layui-menu-item-divider\"></li>";
+                }
+
 			}
 		}
 	}

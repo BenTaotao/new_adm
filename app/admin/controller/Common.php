@@ -32,14 +32,13 @@ class Common
 	#验证权限
 	public function auth()
 	{
-		$Admin_outime = session('Admin_outime');
-		$admin_info = session('admin_info');
+		$Admin_outime = session('admin.outime');
+		$admin_info = session('admin.info');
 		
 		
-		session("admin_name", $admin_info['admin_name']);
-		session("admin_id", $admin_info['id']);
-		session('truename', $admin_info['truename']);
-		session('language', $admin_info['language']);
+		session("admin.name", $admin_info['admin_name']);
+		session("admin.id", $admin_info['id']);
+		session('admin.truename', $admin_info['truename']);
 		
 		#检查权限
 		$app_name = app('http')->getName();
@@ -56,22 +55,14 @@ class Common
 			return true;
 		}
 		#其他不需要验证权限的方法
-		$nocheckauth = ['auth/fun', 'admin/uppass', 'department/getdepartmenttotalnumber', 'duty/get_moth_day',
-			'duty/getplandate', 'duty/gettotal', 'duty/getdepartmentagents', 'duty/getplandata',
-			'duty/gethandoverstatus', 'duty/getplandepartmentname', 'duty/get_inspection', 'duty/getcalendarusers',
-			'duty/getcalendaruserschild', 'duty/getdepartmentname', 'duty/getusername', 'duty/getdoexportcalendarusers',
-			'duty/getdoexportplandate', 'equipment/file_del', 'equipment/file_del', 'equipment/getequipmentname',
-			'equipment/getequipmentnum', 'equipment/coordinates', 'inspection/ajax_equ', 'inspection/ajax_num',
-			'knowledge/file_add', 'knowledge/validate_add', 'maintenance/ajax_equ', 'maintenance/ajax_num',
-			'manage/verification', 'manage/user_contact_add', 'message/send', 'notice/validate_add',
-			'spare/getwarningstatus', 'spare/getspare', 'spare/getwarning', 'user/user_certificate_add',
-			'user/verification_add'];
+		$nocheckauth = ['auth/fun', 'admin/uppass','survey/printall','survey/detail','survey/answer_detail'];
 		$current = strtolower($controller . '/' . $action);
 		if (in_array($current, $nocheckauth)) {
 			return true;
 		}
 		// 检测权限
-		if (!$auth->check($app_name . '/' . $controller . '/' . $action, $admin_info['id'])) {
+		// if (!$auth->check($app_name . '/' . $controller . '/' . $action, $admin_info['id'])) {
+		if (!$this->authcheck($app_name . '/' . $controller . '/' . $action, $admin_info['id'])) {
 			// 第一个参数是规则名称,第二个参数是用户UID
 			//有显示操作按钮的权限
 			print_r("<script src='/static/admin/layui/layui.js'></script>
@@ -83,15 +74,33 @@ class Common
 		}
 		return true;
 	}
-	
+
+    #菜单验证权限
+    private function authcheck($name,$id){
+        $auth_rule_id = Db::name('auth_rule')->where(['name'=>$name])->value('id');
+        $auth_group_id = Db::name('auth_group_access')->where(['uid'=>$id])->value('group_id');
+        $rules_list = Db::name('auth_group')->where(['id'=>$auth_group_id])->field('rules')->find();
+        $rules_arr = explode(',', $rules_list['rules']);
+        if (in_array($auth_rule_id, $rules_arr)){
+            return true;
+        }
+        return false;
+    }
+
 	#这里是公共的模板数据--菜单等
 	public function initialize()
 	{
 		#menu
-		$admin_info = session('admin_info');
+		$admin_info = session('admin.info');
 		$admin_id = $admin_info['id'];
 		$power_team = $admin_info['power_team'];
 		$auth_group_id = Db::name('auth_group_access')->where(['uid' => $admin_id])->find();
+
+        if(!$auth_group_id) {
+            echo "权限错误，请联系管理员";
+            die();
+        }
+
 		$auth_group = Db::name('auth_group')->where(['status' => 1])->where(['id' => $auth_group_id['group_id']])->find();
 		$rule_list = explode(',', $auth_group['rules']);
 		if ($power_team === 1) { ##这里如果是超级管理员则抛出所有菜单
@@ -144,7 +153,7 @@ class Common
 	public function ULog(string $content = '')
 	{
 		$data = [
-			'admin_id' => session("admin_id"),
+			'admin_id' => session("admin.id"),
 			'type' => 2,
 			'content' => $content,
 			'create_time' => time(),

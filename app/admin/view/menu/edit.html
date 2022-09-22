@@ -91,7 +91,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">图标</label>
             <div class="layui-input-block">
-                <input type="number" name="icon" value="{$data.icon}" required autocomplete="off" class="layui-input input-w">
+                <input type="text" id="iconPicker" lay-filter="iconPicker" class="layui-hide" >
+                <input id="icon" name="icon" value="{$data.icon}" autocomplete="off" class="layui-input" >
             </div>
         </div>
         <div class="layui-form-item">

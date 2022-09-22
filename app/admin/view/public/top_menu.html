@@ -1,6 +1,16 @@
+<style>
+    .layui-layout-admin .layui-logo{
+        width: 250px !important;
+    }
+    .header-title{
+        color: #fff;
+        font-weight: normal;
+        font-size: 22px;
+    }
+</style>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo show-menu" id="show-menu"><h2>{$site_name}</h2></div>
+        <div class="layui-logo show-menu" id="show-menu"><h2 class="header-title">{$site_name}</h2></div>
         <!--        <div class="layui-logo"><i class="layui-icon layui-icon-shrink-right"></i></div>-->
         <!-- 头部区域（可配合layui 已有的水平导航） -->
         <ul class="layui-nav layui-layout-left" lay-filter="header-menu" style="display: none;" id="header_menu">

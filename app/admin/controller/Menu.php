@@ -67,6 +67,7 @@ class Menu extends Common
 			if (empty($res)) {
 				return ajaxTable(1);
 			} else {
+                $this->ULog("新增菜单 {$data['name']}");
 				return ajaxTable(0);
 			}
 		}
@@ -104,6 +105,7 @@ class Menu extends Common
 			if (empty($res)) {
 				return ajaxTable(1);
 			} else {
+                $this->ULog("修改菜单");
 				return ajaxTable(0);
 			}
 		}
@@ -144,6 +146,7 @@ class Menu extends Common
 			}
 			$res = Db::name('auth_rule')->where(['id' => $id])->delete();
 			if ($res) {
+                $this->ULog("删除了菜单 {$result['title']}");
 				return ajaxTable(0);
 			} else {
 				return ajaxTable(1);

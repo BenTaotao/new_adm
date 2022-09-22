@@ -3,7 +3,7 @@
 <div class="layui-layout layui-layout-admin">
     <div class="layui-row">
         <div class="layui-col-md3">
-            <a href="#" onclick="addPower()" class="layui-btn layui-btn-danger">新增权限组</a>
+            <a href="javascript:void (0);" onclick="addPower()" class="layui-btn layui-btn-danger">新增权限组</a>
         </div>
     </div>
     <div class="table-responsive">
@@ -63,21 +63,22 @@
                 addPower(data.id);
             }
             if(obj.event === 'group_rule'){
-                var index = layer.open({
+                var index = top.layer.open({
                     title : "修改--"+data.title+"--权限规则",
                     type : 2,
+                    shade: 0,
                     id:"layer_editrule",
-                    area: ['600px', '600px'],
+                    area: ['60%', '80%'],
                     content : "{:url('auth/rule')}?id="+data.id,
                 });
                 // layer.full(index);
             }
             if(obj.event === 'group_del'){
                 if(data.id === 1){
-                    layer.msg('超级管理员禁止删除!')
+                    top.layer.msg('超级管理员禁止删除!')
                     return false;
                 }
-                layer.confirm('确定要删除吗？',{
+                top.layer.confirm('确定要删除吗？',{
                     btn:['确定','取消']
                     ,btn2:function (index) {
                         layer.close(index)
@@ -91,13 +92,13 @@
                         },
                         success: function(data){
                             if(data.code === 0){
-                                layer.msg('操作成功！')
+                                top.layer.msg('操作成功！')
                                 setTimeout(function () {
                                     parent.layer.close(index);
                                 }, 2000);
                                 reload();
                             }else{
-                                layer.msg('操作失败！')
+                                top.layer.msg('操作失败！')
                             }
                         }
                     })
@@ -121,11 +122,12 @@
             sub_url = "{:url('auth/edit')}";
             title = '修改权限组';
         }
-        var index = layer.open({
+        var index = top.layer.open({
             type: 2,
+            shade: 0,
             title: title,
             id:"layer_addpower",
-            area: ['500px', '450px'],
+            area: ['50%', '60%'],
             content: url,
             btn:["保存","关闭"],
             btn1:function () {
@@ -138,10 +140,10 @@
                         type:"post",
                         data: d,
                         success:function (ret) {
-                            layer.msg(ret['msg']);
+                            top.layer.msg(ret['msg']);
                             if(ret['code'] == 0){
                                 setTimeout(function () {
-                                    layer.close(index);
+                                    top.layer.close(index);
                                 }, 2000);
                                 reload();
                             }
@@ -152,7 +154,7 @@
                 _$("#formDemo").click();
             },
             btn2:function () {
-                layer.close(index)
+                top.layer.close(index)
             }
         })
         // layer.full(index);

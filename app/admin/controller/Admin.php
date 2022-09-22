@@ -72,6 +72,7 @@ class Admin extends Common
             if ($res_id) {
                 $power_team = $data['power_team'];
                 Db::name('auth_group_access')->insert(['uid'=>$res_id,'group_id'=>$power_team]);
+                $this->ULog("添加了管理员");
                 return ajaxTable(0);
             } else {
                 return ajaxTable(1);
@@ -108,6 +109,7 @@ class Admin extends Common
 				Db::name('admin')->where(['id' => $id])->update($data);
 				Db::name('auth_group_access')->where(['uid'=>$id])->update(['group_id' => $data['power_team']]);
 				Db::commit();
+                $this->ULog("修改了管理员");
 				return ajaxTable(0);
 			} catch (\Exception $e) {
 				// 回滚事务
@@ -131,6 +133,7 @@ class Admin extends Common
             $id = $_POST['id'];
             $res = Db::name('admin')->where(['id' => $id])->update(['is_delete' => 0]);
             if ($res) {
+                $this->ULog("删除了管理员");
                 return ajaxTable(0);
             } else {
                 #write_log("删除失败:","Admin","Error");
@@ -150,6 +153,7 @@ class Admin extends Common
                 // $res = Db::name('admin')->where(['id' => $id])->update(['admin_pwd' => $admin_pwd,'pwd_hash'=>$pwd_hash]);
                 $res = Db::name('admin')->where(['id' => $id])->update(['admin_pwd' => $admin_pwd]);
                 if ($res) {
+                    $this->ULog("修改了密码");
                     return ajaxTable(0);
                 } else {
                     #write_log("删除失败:","Admin","Error");
@@ -163,5 +167,25 @@ class Admin extends Common
         $data = Db::name('admin')->where(['id' => $id])->find();
         view::assign('data',$data);
         return view::fetch();
+    }
+
+    #操作日志
+    public function adminlog()
+    {
+        if (\request()->isAjax()) {
+            $page = input('page');
+            $limit = input('limit');
+
+            $log_list = Db::name('admin_log')->page($page,$limit)->order('id desc')->select();
+            foreach ($log_list as $key => $value) {
+                $value['admin_name']    = Db::name('admin')->where(['id' => $value['admin_id']])->value('admin_name');
+                $value['type']        = 1 ? '登录日志' : '操作日志';
+                $value['create_time'] = date('Y-m-d H:i', $value['create_time']);
+                $log_list[$key]       = $value;
+            }
+            return ajaxTable(0,'',$log_list);
+        }
+
+        return View::fetch();
     }
 }

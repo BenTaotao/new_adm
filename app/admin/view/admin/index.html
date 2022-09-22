@@ -3,7 +3,7 @@
 <div class="layui-layout layui-layout-admin">
   <div class="layui-row">
     <div class="layui-col-md3">
-      <a href="#" onclick="addAdmin()" class="layui-btn layui-btn-danger">新增</a>
+      <a href="javascript:void (0);" onclick="addAdmin()" class="layui-btn layui-btn-danger">新增</a>
     </div>
   </div>
   <div class="table-responsive">
@@ -36,7 +36,7 @@
         ,{field: 'create_time', title: '创建时间',align:'center',templet: "<div>{{layui.util.toDateString(d.create_time, 'yyyy-MM-dd')}}</div>"}
         ,{field: 'power_team', title: '权限组',align:'center'}
         ,{field: 'is_delete', title: '状态',templet:function (d) {
-            return d.is_delete == 0 ? "正常" : "禁用";
+            return d.is_delete == 1 ? "正常" : "禁用";
           }}
         ,{field: 'right', title: '操作',align:'center',width:300,toolbar:"#barDemo"}
       ]]
@@ -67,13 +67,13 @@
       }
       if(obj.event === 'admin_del'){
         if(data.id === 1){
-          layer.msg('超级管理员禁止删除!')
+          top.layer.msg('超级管理员禁止删除!')
           return false;
         }
-        layer.confirm('确定要删除吗？',{
+        top.layer.confirm('确定要删除吗？',{
           btn:['确定','取消']
           ,btn2:function (index) {
-            layer.close(index)
+            top.layer.close(index)
           }
         },function (index) {
           $.ajax({
@@ -84,10 +84,10 @@
             },
             success: function(data){
               if(data.code === 0){
-                layer.msg('操作成功！')
+                top.layer.msg('操作成功！')
                 reload();
               }else{
-                layer.msg('操作失败！')
+                top.layer.msg('操作失败！')
               }
             }
           })
@@ -111,11 +111,12 @@
       sub_url = "{:url('admin/edit')}";
       title = '修改';
     }
-    var index = layer.open({
+    var index = top.layer.open({
       type: 2,
       title: title,
+      shade: 0,
       id:"layer_addadmin",
-      area: ['500px', '450px'],
+      area: ['50%', '60%'],
       content: url,
       btn:["保存","关闭"],
       btn1:function () {
@@ -128,10 +129,10 @@
             type:"post",
             data: d,
             success:function (ret) {
-              layer.msg(ret['msg']);
+              top.layer.msg(ret['msg']);
               if(ret['code'] == 0){
                 setTimeout(function () {
-                  layer.close(index);
+                  top.layer.close(index);
                 }, 2000);
                 reload();
               }
@@ -142,7 +143,7 @@
         _$("#formDemo").click();
       },
       btn2:function () {
-        layer.close(index)
+        top.layer.close(index)
       }
     })
     // layer.full(index);

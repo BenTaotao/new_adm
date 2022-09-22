@@ -77,13 +77,9 @@
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">图标</label>
-            <div class="layui-input-inline input-group iconpicker-container">
-<!--                <input type="number" name="icon" required autocomplete="off"-->
-<!--                       class="layui-input input-w">-->
-                <span class="input-group-addon">123<i class="fa fa-pencil"></i></span>
-                <input maxlength="30" id="icon" name="icon"
-                       value="fa-list" class="layui-input"
-                       placeholder="请输入图标class">
+            <div class="layui-input-block">
+                <input type="text" id="iconPicker" lay-filter="iconPicker" class="layui-hide" >
+                <input id="icon" name="icon" class="layui-input" >
             </div>
         </div>
 
@@ -107,15 +103,13 @@
         </div>
     </form>
 </div>
-<script src="/static/admin/iconpicker/js/iconpicker.min.js" charset="utf-8"></script>
-
 
 {include file="public/page_footer" /} <!--尾部公共区域-->
-
 
 <script type="text/javascript">
     layui.use('form', function(){
         var form = layui.form;
+
         form.on('select(controller)', function(data){
             var controller = data.value;
             if (controller) {
@@ -175,7 +169,4 @@
             return false;
         });
     });
-</script>
-<script>
-    $('#icon').iconpicker({placement: 'bottomLeft'});
 </script>

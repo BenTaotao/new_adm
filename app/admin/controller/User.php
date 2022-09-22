@@ -17,7 +17,12 @@ class User extends Common
 	{
 		if (request()->isAjax()){
 			$user_list = Db::name('user')->order('id desc')->select();
-		
+            foreach ($user_list as $k=> $val){
+                $val['register_time'] = date('Y-m-d H:i:s',$val['register_time']);
+                $val['last_time'] = date('Y-m-d H:i:s',$val['last_time']);
+                $user_list[$k] = $val;
+
+            }
 			return ajaxTable(0,'',$user_list);
 		}
 		
