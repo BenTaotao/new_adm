@@ -21,7 +21,7 @@ class AliPay
             //2. 发起API调用（以支付能力下的统一收单交易创建接口为例）
             $result = Factory::payment()->page()
 //                ->optional("qr_pay_mode", "4")->optional("qrcode_width", "242")
-                ->pay($subject, $outTradeNo, $totalAmount,'https://ly.yue999.cn/index/order/pay_result');
+                ->pay($subject, $outTradeNo, $totalAmount,'支付回调地址');
             return $result->body;
 
             //3. 处理响应或异常
