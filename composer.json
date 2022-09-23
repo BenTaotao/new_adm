@@ -38,7 +38,8 @@
         "dragonmantank/cron-expression": "^3.1",
         "topthink/think-api": "^1.0",
         "symfony/mailer": "^6.0",
-        "phpoffice/phpexcel": "^1.8"
+        "phpoffice/phpexcel": "^1.8",
+        "alipaysdk/easysdk": "^2.2"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
