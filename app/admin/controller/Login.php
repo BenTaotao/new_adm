@@ -85,13 +85,5 @@ class Login
 		
 	}
 	
-	public function login_out()
-	{
-        Session::delete('admin');
-
-        #session后面不能跟exit、die、redirect等傻逼的函数，跟了就删不掉session，所以直接在index写了删session
-		return redirect('/admin/login/index');
-	}
-	
 	
 }
