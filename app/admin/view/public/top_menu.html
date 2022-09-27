@@ -7,6 +7,22 @@
         font-weight: normal;
         font-size: 22px;
     }
+    .layui-tab-content{
+        overflow-y: auto;
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track{
+        background: #ffffff;
+        border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #9ea2a4;
+        border-radius: 3px;
+    }
 </style>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
@@ -80,4 +96,9 @@
                     <li class="layui-this">控制台</li>
                     <!--<li>用户基本管理</li>--><!--示例-->
                 </ul>
-                <div class="layui-tab-content">
+                <div class="layui-tab-content" style="height: 800px">
+                    <script>
+                        var content_height = window.innerHeight - 111 -30 ;
+                        $('.layui-tab-content').css('height',content_height+'px');
+                            // layui.jquery(window).height() - 51;
+                    </script>

@@ -5,7 +5,7 @@
 
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-<!--        <div style="text-align: center;">作者：Taotao；QQ：1573027560</div>-->
+       <div style="text-align: center;">author：Taotao；wx：bxt329</div>
     </div>
 </div>
 
@@ -14,9 +14,9 @@
 
 <script>
     layui.config({
-        base: "/static/admin/layui_extend/tabletree/" //配置 layui 第三方扩展组件存放的基础目录
+        base: "/static/admin/layui_extend/", //配置 layui 第三方扩展组件存放的基础目录
     }).extend({
-        tabletree: 'tabletree/tabletree'
+        tabletree: 'tabletree/tabletree',
     }).use('tabletree');
     //JavaScript代码区域
     layui.use(['layer', 'form', 'jquery', 'element', 'dropdown','notify'], function () {

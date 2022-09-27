@@ -414,6 +414,7 @@ body .cool-black .layui-layer-btn a {
 
 ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
     color: #000;
 }
 
