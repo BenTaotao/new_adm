@@ -65,7 +65,7 @@ class Common
 		if (!$this->authcheck($app_name . '/' . $controller . '/' . $action, $admin_info['id'])) {
 			// 第一个参数是规则名称,第二个参数是用户UID
 			//有显示操作按钮的权限
-			print_r("<script src='/static/admin/layui/layui.js'></script>
+			print_r("<script src='/static/admin/layui272/layui.js'></script>
 								<script type='text/javascript'>
 								top.layer.msg('没有权限', {time: 3000 //2秒关闭（如果不配置，默认是3秒）
 								}, function(){parent.location.reload();});

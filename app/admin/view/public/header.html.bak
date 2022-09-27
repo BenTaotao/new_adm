@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="/static/admin_xunjian/css/style.css">
     <link rel="stylesheet" href="/static/admin_xunjian/css/nav.css">
 
-    <link rel="stylesheet" href="/static/admin/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/layui272/css/layui.css">
 
     <script type="text/javascript" src="/static/admin_xunjian/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/admin_xunjian/js/nav.js"></script>
