@@ -20,6 +20,7 @@ class Index
 
 
 
+
 //        ini_set('smtp', 'smtp.qq.com');
 //        // 消息
 //        $message = "Line 1\r\nLine 2\r\nLine 3";
