@@ -67,11 +67,11 @@ class Index
 		// $hash = "{SSHA256}" . base64_encode(hash('sha256', $password . $salt) . $salt);
 		//
 		//
-		// #这里测试sha512加密
-		// $sha2 = new Sha2();
-		// $s512 = $sha2->sha512('123');
-		// $s256 = $sha2->sha256('123');
-		// halt($s5121,$s512,$s256);
+		 #这里测试sha512加密
+		 $sha2 = new Sha2();
+		 $s512 = $sha2->sha512('123');
+		 $s256 = $sha2->sha256('123');
+		 halt($s512,$s256);
 
 		#这里是测试tp官方接口的
 		// $client = new Client("0777d1f7032e232dd5fdef5976212f08");
