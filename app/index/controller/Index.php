@@ -14,6 +14,35 @@ class Index
 
 	public function index()
 	{
+        print_r(uniqid());
+        print_r(eval('return 1;'));
+
+//        ini_set('smtp', 'smtp.qq.com');
+//        // 消息
+//        $message = "Line 1\r\nLine 2\r\nLine 3";
+//
+//// 如果任何一行超过 70 个字符，应该使用 wordwrap()
+//        $message = wordwrap($message, 70, "\r\n");
+//
+//// 发送
+//        mail('1573027560@qq.com', 'My Subject', $message);
+//        ini_set('smtp', 'smtp.qq.com');
+//        ini_set('smtp_port', 25);
+//        $to      = '15753027560@qq.com';
+//        $subject = 'the subject';
+//        $message = 'hello';
+//        $headers = 'From: baixiantao@qq.com' . "\r\n" .
+//                   'Reply-To: baixiantao@qq.com' . "\r\n" .
+//                   'X-Mailer: PHP/' . phpversion();
+//
+//        mail($to, $subject, $message, $headers);
+//        print_r(getmypid());
+//        print_r(getrusage());
+//        print_r(getrusage(true));
+//        halt(phpinfo());
+        #每月收入一万元，生活开支2000元，负债总额150000元，请帮我做一个详细的还款计划
+
+
 
         // app() -> getRootPath(); //获取应用根目录
         // app() -> getNamespace(); //获取应用类库命名空间
