@@ -16,9 +16,10 @@ class Index
 	{
         print_r(uniqid());
         print_r(eval('return 1;'));
-
-
-
+        print_r(eval('return 1;'));
+        print_r(eval('return 1;'));
+        print_r(eval('return 1;'));
+        print_r(eval('return 1;'));
 
 
 //        ini_set('smtp', 'smtp.qq.com');
