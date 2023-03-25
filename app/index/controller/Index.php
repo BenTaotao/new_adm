@@ -40,9 +40,6 @@ class Index
 //        print_r(getrusage());
 //        print_r(getrusage(true));
 //        halt(phpinfo());
-        #每月收入一万元，生活开支2000元，负债总额150000元，请帮我做一个详细的还款计划
-
-
 
         // app() -> getRootPath(); //获取应用根目录
         // app() -> getNamespace(); //获取应用类库命名空间
