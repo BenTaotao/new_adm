@@ -14,8 +14,7 @@ class Index
 
 	public function index()
 	{
-        print_r(uniqid());
-        print_r(eval('return 1;'));
+        echo "这里是首页";
 
 
 //        ini_set('smtp', 'smtp.qq.com');
