@@ -15,6 +15,13 @@ class Index
 	public function index()
 	{
         echo "这里是首页";
+        echo "这里是首页";
+        echo "这里是首页";
+        echo "这里是首页";
+        echo "这里是首页";
+        echo "这里是首页";
+        echo "这里是首页";
+        echo "这里是首页";
 
 
 //        ini_set('smtp', 'smtp.qq.com');
