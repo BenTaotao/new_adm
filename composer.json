@@ -22,7 +22,7 @@
     "require": {
         "php": ">=7.1.0",
         "topthink/framework": "^6.0.0",
-        "topthink/think-orm": "^2.0",
+        "topthink/think-orm": "^3.0",
         "topthink/think-multi-app": "^1.0",
         "topthink/think-captcha": "^3.0",
         "topthink/think-worker": "^3.0",
@@ -37,9 +37,19 @@
         "topthink/think-view": "^1.0",
         "dragonmantank/cron-expression": "^3.1",
         "topthink/think-api": "^1.0",
-        "symfony/mailer": "^6.0",
-        "phpoffice/phpexcel": "^1.8",
-        "alipaysdk/easysdk": "^2.2"
+        "symfony/mailer": "^6.2",
+        "alipaysdk/easysdk": "^2.2",
+        "bingher/ueditor": "*",
+        "thans/thinkphp-filesystem-cloud": "*",
+        "phpoffice/phpspreadsheet": "^1.28",
+        "hg/apidoc": "^5.0",
+        "spatie/image": "^1.10",
+        "w7corp/easywechat": "^2.1",
+        "zjkal/time-helper": "^1.1",
+        "iszsw/surface": "^3.0",
+        "topthink/think-filesystem": "^1.0",
+        "topthink/think-migration": "^3.0",
+        "yzh52521/easyhttp": "^1.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2"

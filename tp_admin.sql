@@ -1,5 +1,5 @@
 /*
- Navicat MySQL Data Transfer
+ Navicat Premium Data Transfer
 
  Source Server         : tp_admin
  Source Server Type    : MySQL
@@ -11,7 +11,7 @@
  Target Server Version : 80012
  File Encoding         : 65001
 
- Date: 05/07/2022 18:07:41
+ Date: 26/03/2023 02:48:06
 */
 
 SET NAMES utf8mb4;
@@ -45,10 +45,75 @@ CREATE TABLE `xt_admin`  (
 -- ----------------------------
 -- Records of xt_admin
 -- ----------------------------
-INSERT INTO `xt_admin` VALUES (1, 'admin', '超级管理员', '', '$2y$10$ylYO42VTKG7v1u.uSix6x.0BBGuNGx0i2GkTyQcWm1O2MECpMKlqG', '', 1657010666, '127.0.0.1', 0, 1, 0, 0, '', '', NULL, '', '9431366260e31e0e42f63d8261fdd363');
+INSERT INTO `xt_admin` VALUES (1, 'admin', '超级管理员', '', '$2y$10$ylYO42VTKG7v1u.uSix6x.0BBGuNGx0i2GkTyQcWm1O2MECpMKlqG', '', 1679758717, '127.0.0.1', 0, 1, 1, 0, '', '', NULL, '', '2bf041fc55bdc78b422bd643e9c93bdc');
 INSERT INTO `xt_admin` VALUES (20, 'baixiantao', '白白白', '', '445a6f975e58ed7cb696ca034140aae2', '', 1606895054, '36.46.161.120', 1606894776, 1, 1, 0, '', '', NULL, '', NULL);
 INSERT INTO `xt_admin` VALUES (21, 'chengbin', '嘿嘿', '', 'fe35c960aeb94b7e65ceed4b8992f4f5', '', 1606900381, '36.46.161.120', 1606896163, 2, 0, 0, '', '', NULL, '', NULL);
 INSERT INTO `xt_admin` VALUES (22, 'geluqi', '小白白', '', '022798d51e32c743000956a9b2eeab9d', '', 1606901352, '192.200.115.226', 1606896284, 2, 0, 0, '', '', NULL, '', NULL);
+
+-- ----------------------------
+-- Table structure for xt_admin_author
+-- ----------------------------
+DROP TABLE IF EXISTS `xt_admin_author`;
+CREATE TABLE `xt_admin_author`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `admin_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '账号',
+  `third_token` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '第三方唯一标识',
+  `third_type` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '1google2facebook3账号密码',
+  `email` char(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '邮箱',
+  `user_type` tinyint(4) NOT NULL DEFAULT 0 COMMENT '0:普通会员1:VIP',
+  `passwd` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '密码',
+  `nickname` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '昵称',
+  `realname` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '真实名字',
+  `birthday` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '生日',
+  `token` char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '登录生成token验证',
+  `gender` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '性别0:未知1:男2:女',
+  `avatar` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '头像',
+  `register_time` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '注册时间',
+  `register_ip` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '注册IP',
+  `last_time` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '最后登录时间',
+  `last_ip` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '最后登录IP',
+  `login_num` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '登录次数',
+  `user_lock` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户锁定1锁定0正常',
+  `time_zone` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'GMT+8' COMMENT '默认中国时区东八区',
+  `ip_zone` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT 'IP地区',
+  `country` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '国家',
+  `language` char(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '语言',
+  `author_source` tinyint(4) NOT NULL DEFAULT 0 COMMENT '作者来源1作家平台，0其他',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `mobile`(`email` ASC) USING BTREE,
+  INDEX `openid`(`third_token` ASC) USING BTREE,
+  INDEX `nickname`(`nickname` ASC) USING BTREE,
+  INDEX `language`(`language` ASC) USING BTREE,
+  INDEX `country`(`country` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 69 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xt_admin_author
+-- ----------------------------
+INSERT INTO `xt_admin_author` VALUES (1, 'zuojia', '', 3, '', 0, 'e10adc3949ba59abbe56e057f20f883e', '', '', '', '', 0, '', 1564646217, '', 1564969152, '127.0.0.1', 0, 0, 'GMT+8', '', '', '', 1);
+INSERT INTO `xt_admin_author` VALUES (3, 'google', '104832614229127492552', 1, '', 0, 'e10adc3949ba59abbe56e057f20f883e', '', '', '', '', 0, '', 0, '', 1564993357, '127.0.0.1', 0, 0, 'GMT+8', '', '', '', 1);
+INSERT INTO `xt_admin_author` VALUES (26, 'author', '', 3, '', 0, 'e10adc3949ba59abbe56e057f20f883e', '', '', '', '69e81d45513068734d8be863e9d271e8', 0, '', 0, '114.4.222.153', 1567740394, '127.0.0.1', 3, 0, 'GMT+8', '印度尼西亚 雅加达', '印度尼西亚', '', 1);
+INSERT INTO `xt_admin_author` VALUES (47, 'Zhuang Bifan', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1560767490, '', 1565149981, '127.0.0.1', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (48, 'Athifa', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 1564985674, '127.0.0.1', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (49, 'Sasikirana', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 1564986084, '127.0.0.1', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (50, 'Parisya', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 0, '', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (51, 'Lemon', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 0, '', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (52, 'Teresa', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 0, '', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (53, 'Fabricia Rosalie', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 0, '', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (54, 'Clarissa', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 0, '', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (55, 'Marshmallow', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 1567740261, '127.0.0.1', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (56, 'Ann', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 1564986052, '127.0.0.1', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (57, 'Arshinta Kirania Pratista', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 0, '', 0, '', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (58, '123', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1559289969, '', 0, '', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (59, '123', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1559290126, '', 0, '', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (60, '', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1561345114, '', 0, '', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (61, '陈西', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1563608562, '', 1565059308, '127.0.0.1', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (62, 'at', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1564045535, '', 0, '', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (63, '香蕉西红柿', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1564646217, '', 0, '', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (64, 'webread', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1564647973, '', 1567732416, '127.0.0.1', 0, 0, 'GMT+8', '', '', 'indonesian', 0);
+INSERT INTO `xt_admin_author` VALUES (65, '天蚕土豆', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1564648274, '', 0, '', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (66, '香蕉西红柿', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1564652840, '', 0, '', 0, 0, 'GMT+8', '', '', 'english', 0);
+INSERT INTO `xt_admin_author` VALUES (68, 'mengfeike', '', 3, '', 0, 'f0d9bac9279c026a720f9caaebd14bea', '', '', '', '', 0, '', 1564725970, '', 0, '', 0, 0, 'GMT+8', '', '', 'english', 0);
 
 -- ----------------------------
 -- Table structure for xt_admin_log
@@ -62,8 +127,8 @@ CREATE TABLE `xt_admin_log`  (
   `create_time` int(10) NOT NULL DEFAULT 0,
   `ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'ip',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `admin_id`(`admin_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 71 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员操作log日志' ROW_FORMAT = COMPACT;
+  INDEX `admin_id`(`admin_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 95 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员操作log日志' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of xt_admin_log
@@ -140,6 +205,28 @@ INSERT INTO `xt_admin_log` VALUES (69, 1, '1', '[admin] 登录', 1656982768, '12
 INSERT INTO `xt_admin_log` VALUES (70, 1, '1', '[admin] 登录', 1656999720, '127.0.0.1');
 INSERT INTO `xt_admin_log` VALUES (71, 1, '1', '[admin] 登录', 1657003532, '127.0.0.1');
 INSERT INTO `xt_admin_log` VALUES (72, 1, '1', '[admin] 登录', 1657010666, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (73, 1, '1', '[admin] 登录', 1663955860, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (74, 1, '1', '[admin] 登录', 1663956030, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (75, 1, '1', '[admin] 登录', 1663956032, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (76, 1, '1', '[admin] 登录', 1663956036, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (77, 1, '1', '[admin] 登录', 1663956095, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (78, 1, '1', '[admin] 登录', 1663956097, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (79, 1, '1', '[admin] 登录', 1663956098, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (80, 1, '1', '[admin] 登录', 1663956164, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (81, 1, '1', '[admin] 登录', 1677001755, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (82, 1, '1', '[admin] 登录', 1677005046, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (83, 1, '1', '[admin] 登录', 1677014552, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (84, 1, '1', '[admin] 登录', 1677058298, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (85, 1, '1', '[admin] 登录', 1679447950, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (86, 1, '1', '[admin] 登录', 1679674881, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (87, 1, '1', '[admin] 登录', 1679685579, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (88, 1, '1', '[admin] 登录', 1679685827, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (89, 1, '1', '[admin] 登录', 1679694712, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (90, 1, '1', '[admin] 登录', 1679695242, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (91, 1, '1', '[admin] 登录', 1679696241, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (92, 1, '1', '[admin] 登录', 1679701175, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (93, 1, '1', '[admin] 登录', 1679705231, '127.0.0.1');
+INSERT INTO `xt_admin_log` VALUES (94, 1, '1', '[admin] 登录', 1679758717, '127.0.0.1');
 
 -- ----------------------------
 -- Table structure for xt_auth_group
@@ -424,7 +511,7 @@ CREATE TABLE `xt_bank_province_city`  (
   `parent_id` int(11) NOT NULL DEFAULT 0,
   `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 376 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 377 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of xt_bank_province_city
@@ -817,7 +904,7 @@ CREATE TABLE `xt_config`  (
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `key`(`key`) USING BTREE
+  INDEX `key`(`key` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '配置信息' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
@@ -865,7 +952,7 @@ CREATE TABLE `xt_mail_config`  (
   `type` tinyint(3) NOT NULL DEFAULT 0 COMMENT '0：发验证码 1：发广告',
   `security_code` tinytext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '安全密码',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '邮箱配置' ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '邮箱配置' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of xt_mail_config
@@ -889,7 +976,7 @@ CREATE TABLE `xt_online_customer_service`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of xt_online_customer_service
@@ -905,7 +992,7 @@ CREATE TABLE `xt_powerteam`  (
   `power` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '权限,以一个数组的形式保存',
   `describe` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '权限组说明',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of xt_powerteam
@@ -920,7 +1007,7 @@ CREATE TABLE `xt_test`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of xt_test
@@ -966,21 +1053,21 @@ CREATE TABLE `xt_user`  (
   `order_money` decimal(10, 2) NULL DEFAULT 0.00 COMMENT '用户充值总金额',
   `google_ad_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0' COMMENT '谷歌广告ID',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `invite_code`(`invite_code`) USING BTREE,
-  INDEX `mobile`(`email`) USING BTREE,
-  INDEX `nickname`(`nickname`) USING BTREE,
-  INDEX `language`(`language`) USING BTREE,
-  INDEX `channel`(`channel`) USING BTREE,
-  INDEX `country`(`country`) USING BTREE,
-  INDEX `google_device_token`(`google_device_token`) USING BTREE,
-  INDEX `gender`(`gender`) USING BTREE,
-  INDEX `register_time`(`register_time`) USING BTREE,
-  INDEX `last_time`(`last_time`) USING BTREE,
-  INDEX `appid`(`appid`) USING BTREE,
-  INDEX `hare_user_id`(`hare_user_id`) USING BTREE,
-  INDEX `device`(`device`) USING BTREE,
-  INDEX `order_money`(`order_money`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10016 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = COMPACT;
+  UNIQUE INDEX `invite_code`(`invite_code` ASC) USING BTREE,
+  INDEX `mobile`(`email` ASC) USING BTREE,
+  INDEX `nickname`(`nickname` ASC) USING BTREE,
+  INDEX `language`(`language` ASC) USING BTREE,
+  INDEX `channel`(`channel` ASC) USING BTREE,
+  INDEX `country`(`country` ASC) USING BTREE,
+  INDEX `google_device_token`(`google_device_token` ASC) USING BTREE,
+  INDEX `gender`(`gender` ASC) USING BTREE,
+  INDEX `register_time`(`register_time` ASC) USING BTREE,
+  INDEX `last_time`(`last_time` ASC) USING BTREE,
+  INDEX `appid`(`appid` ASC) USING BTREE,
+  INDEX `hare_user_id`(`hare_user_id` ASC) USING BTREE,
+  INDEX `device`(`device` ASC) USING BTREE,
+  INDEX `order_money`(`order_money` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10017 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of xt_user
@@ -1018,8 +1105,8 @@ CREATE TABLE `xt_user_login_log`  (
   `channel` char(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'google' COMMENT '渠道',
   `device` char(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '设备device',
   `appid` tinyint(1) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'app表的id',
-  INDEX `user_id`(`user_id`) USING BTREE,
-  INDEX `third_token`(`third_token`) USING BTREE
+  INDEX `user_id`(`user_id` ASC) USING BTREE,
+  INDEX `third_token`(`third_token` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = COMPACT;
 
 -- ----------------------------

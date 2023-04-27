@@ -21,5 +21,13 @@ return [
             'visibility' => 'public',
         ],
         // 更多的磁盘配置信息
+        'ueditor' => [
+            'type'         => 'aliyun',
+            'accessId'     => 'aliyun OSS accessId',
+            'accessSecret' => 'aliyun OSS accessSecret',
+            'endpoint'     => 'aliyun OSS endpoint',
+            'bucket'       => 'aliyun OSS bucket',
+            'url'          => 'aliyun OSS url', //不要斜杠结尾，此处为URL地址域名。
+        ],
     ],
 ];
