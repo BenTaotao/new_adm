@@ -8,6 +8,7 @@ use hg\apidoc\exception\ErrorException;
 use hg\apidoc\utils\DirAndFile;
 use hg\apidoc\utils\Helper;
 use hg\apidoc\utils\Lang;
+use think\facade\Log;
 
 class ParseApiDetail
 {
@@ -50,12 +51,22 @@ class ParseApiDetail
     }
 
 
-    protected function parseApiMethod($refClass,$refMethod){
+    public function parseApiMethod($refClass,$refMethod,$currentAppData = null){
         $config  = $this->config;
-        $currentApp = $this->currentApp;
+        if (!empty($currentAppData)){
+            $currentApp = $currentAppData;
+            $this->currentApp = $currentAppData;
+            $this->appKey = $currentAppData['appKey'];
+        }else{
+            $currentApp = $this->currentApp;
+
+        }
         if (empty($refMethod->name)) {
             return [];
         }
+        $classTextAnnotations = ParseAnnotation::parseTextAnnotation($refClass);
+        $classAnnotations = (new ParseAnnotation($config))->getClassAnnotation($refClass);
+
         $textAnnotations = ParseAnnotation::parseTextAnnotation($refMethod);
         // 标注不解析的方法
         if (in_array("NotParse", $textAnnotations)) {
@@ -67,7 +78,10 @@ class ParseApiDetail
         if (
             in_array("NotDebug", $textAnnotations) ||
             (isset($config['notDebug']) && $config['notDebug']===true) ||
-            (isset($currentApp['notDebug']) && $currentApp['notDebug']===true)
+            (isset($currentApp['notDebug']) && $currentApp['notDebug']===true) ||
+            isset($methodAnnotations['notDebug']) ||
+            in_array("NotDebug", $classTextAnnotations) ||
+            isset($classAnnotations['notDebug'])
         ) {
             $methodAnnotations['notDebug'] = true;
         }
@@ -88,7 +102,9 @@ class ParseApiDetail
                 (!empty($config['params']) && !empty($config['params']['header']))  ||
                 (!empty($currentApp['params']) && !empty($currentApp['params']['header']))
             ) &&
-            !in_array("NotHeaders", $textAnnotations))
+            !in_array("NotHeaders", $textAnnotations) &&
+            !isset($methodAnnotations['notHeaders'])
+        )
         {
             $headers = !empty($methodAnnotations['header'])?$methodAnnotations['header']:[];
             $methodAnnotations['header'] = $this->mergeGlobalOrAppParams($headers,'header');
@@ -100,7 +116,9 @@ class ParseApiDetail
                 (!empty($config['params']) && !empty($config['params']['query']))  ||
                 (!empty($this->currentApp['params']) && !empty($this->currentApp['params']['query']))
             ) &&
-            !in_array("NotQuerys", $textAnnotations))
+            !in_array("NotQuerys", $textAnnotations) &&
+            !isset($methodAnnotations['notQuerys'])
+            )
         {
             $querys = !empty($methodAnnotations['query'])?$methodAnnotations['query']:[];
             $methodAnnotations['query'] = $this->mergeGlobalOrAppParams($querys,'query');
@@ -112,7 +130,9 @@ class ParseApiDetail
                 (!empty($config['params']) && !empty($config['params']['body']))  ||
                 (!empty($this->currentApp['params']) && !empty($this->currentApp['params']['body']))
             ) &&
-            !in_array("NotParams", $textAnnotations))
+            !in_array("NotParams", $textAnnotations) &&
+            !isset($methodAnnotations['notParams'])
+            )
         {
             $params = !empty($methodAnnotations['param'])?$methodAnnotations['param']:[];
             $methodAnnotations['param'] = $this->mergeGlobalOrAppParams($params,'body');
@@ -243,7 +263,9 @@ class ParseApiDetail
         $paramType='success';
         if (
             in_array("NotResponses", $textAnnotations) ||
-            in_array("NotResponseSuccess", $textAnnotations)
+            in_array("NotResponseSuccess", $textAnnotations) || 
+            isset($methodAnnotations['notResponses']) || 
+            isset($methodAnnotations['notResponseSuccess'])
         ) {
             // 注解了不使用全局响应
             $mergeParams = [];
@@ -254,7 +276,7 @@ class ParseApiDetail
         }
 
         if (!empty($methodAnnotations['responseSuccess'])){
-            if (!is_int(array_key_first($methodAnnotations['responseSuccess']))){
+            if (!is_int(Helper::arrayKeyFirst($methodAnnotations['responseSuccess']))){
                 $methodResponseSuccess = [$methodAnnotations['responseSuccess']];
             }else{
                 $methodResponseSuccess = $methodAnnotations['responseSuccess'];
@@ -262,13 +284,53 @@ class ParseApiDetail
             $mergeParams = Helper::arrayMergeAndUnique("name", $mergeParams,$methodResponseSuccess);
         }
 
+//        if (!empty($mergeParams) && count($mergeParams)){
+//            $resData = [];
+//            foreach ($mergeParams as $item) {
+//                if (!empty($item['main']) && $item['main'] === true){
+//                    $item['children'] = $returned;
+//                }
+//                //支持到二级的挂载
+//                if (isset($item['children']) && !empty($item['children'])) {
+//                    foreach ($item['children'] as &$child) {
+//                        if (!empty($child['main']) && $child['main'] === true){
+//                            $child['children'] = $returned;
+//                        }
+//                    }
+//                }
+////                if (!empty($item['desc'])){
+//                    $item['desc'] = Lang::getLang($item['desc']);
+////                }
+//                if (!empty($item['md'])){
+//                    $item['md'] = ParseMarkdown::getContent($this->appKey,$item['md']);
+//                }
+//                $resData[]=$item;
+//            }
+//            return $resData;
+//        }
+        return $this->mergeResponseSuccessParam($mergeParams,$returned);
+
+    }
+
+    protected function mergeResponseSuccessParam($mergeParams,$returned){
         if (!empty($mergeParams) && count($mergeParams)){
             $resData = [];
             foreach ($mergeParams as $item) {
                 if (!empty($item['main']) && $item['main'] === true){
                     $item['children'] = $returned;
                 }
-                $item['desc'] = Lang::getLang($item['desc']);
+                //支持到二级的挂载
+                if (isset($item['children']) && !empty($item['children'])) {
+                    $item['children'] = $this->mergeResponseSuccessParam($item['children'],$returned);
+//                    foreach ($item['children'] as &$child) {
+//                        if (!empty($child['main']) && $child['main'] === true){
+//                            $child['children'] = $returned;
+//                        }
+//                    }
+                }
+                if (!empty($item['desc'])){
+                    $item['desc'] = Lang::getLang($item['desc']);
+                }
                 if (!empty($item['md'])){
                     $item['md'] = ParseMarkdown::getContent($this->appKey,$item['md']);
                 }
@@ -277,7 +339,6 @@ class ParseApiDetail
             return $resData;
         }
         return $returned;
-
     }
 
     /**
@@ -294,7 +355,9 @@ class ParseApiDetail
         $mergeParams = [];
         if (
             in_array("NotResponses", $textAnnotations) ||
-            in_array("NotResponseError", $textAnnotations)
+            in_array("NotResponseError", $textAnnotations) || 
+            isset($methodAnnotations['notResponses']) || 
+            isset($methodAnnotations['notResponseError'])
         ) {
             // 注解了不使用全局响应
             $mergeParams = [];
@@ -305,7 +368,7 @@ class ParseApiDetail
         }
 
         if (!empty($methodAnnotations['responseError'])){
-            if (!is_int(array_key_first($methodAnnotations['responseError']))){
+            if (!is_int(Helper::arrayKeyFirst($methodAnnotations['responseError']))){
                 $methodResponseError = [$methodAnnotations['responseError']];
             }else{
                 $methodResponseError = $methodAnnotations['responseError'];
@@ -346,7 +409,12 @@ class ParseApiDetail
         }
 
         // 默认default_author
-        if (empty($methodInfo['author']) && !empty($config['default_author']) && !in_array("NotDefaultAuthor", $textAnnotations)) {
+        if (
+            empty($methodInfo['author']) && 
+            !empty($config['default_author']) && 
+            !in_array("NotDefaultAuthor", $textAnnotations) &&
+            !isset($methodInfo['notDefaultAuthor'])
+        ) {
             $methodInfo['author'] = $config['default_author'];
         }
 
@@ -376,12 +444,12 @@ class ParseApiDetail
         $data=[];
         if (!empty($params)){
             // 处理单个注解为对象的参数
-            if (!is_int(array_key_first($params))){
+            if (!is_int(Helper::arrayKeyFirst($params))){
                 $params = [$params];
             }
             foreach ($params as $param) {
                 $item=$this->handleAnnotationsParamItem($param,$field);
-                if (!empty($item) && is_int(array_key_first($item))){
+                if (!empty($item) && is_int(Helper::arrayKeyFirst($item))){
                     if (in_array($field,$notMergeNameFields)){
                         $data = $item;
                     }else{
@@ -417,7 +485,10 @@ class ParseApiDetail
             }else{
                 return false;
             }
-        }else{
+        }else if(!empty($param['table'])){
+            $tableParams = (new ParseModel($this->config))->getTableDocument($param['table'],[]);
+            $data = $this->handleRefData($param,$tableParams,$field);
+        } else{
             $data = $param;
         }
         if (!empty($data['desc'])){
@@ -432,7 +503,7 @@ class ParseApiDetail
                 $paramItem=$this->handleAnnotationsParamItem($child,$field);
 
                 if ($paramItem!==false){
-                    if (!empty($paramItem) && is_array($paramItem) && array_key_first($paramItem)===0){
+                    if (!empty($paramItem) && is_array($paramItem) && Helper::arrayKeyFirst($paramItem)===0){
                         $childrenData = Helper::arrayMergeAndUnique("name",$childrenData,$paramItem);
                     }else{
                         $childrenData[] = $paramItem;
@@ -449,6 +520,14 @@ class ParseApiDetail
                 'type'   => 'array',
                 'desc'   => !empty($data['childrenDesc'])?Lang::getLang($data['childrenDesc']):"",
             ];
+        }
+
+        // 自定义解析
+        if (!empty($this->config['parsesAnnotation'])){
+            $callback = $this->config['parsesAnnotation']($data);
+            if (!empty($callback)){
+                $data = $callback;
+            }
         }
         return $data;
     }
@@ -553,29 +632,34 @@ class ParseApiDetail
         try {
             $modelClass =  ParseModel::getModelClass($classPath);
             $classReflect = new \ReflectionClass($classPath);
-            if (!empty($methodName) && empty($modelClass)){
+            if (!empty($modelClass)){
+                // 模型解析
+                $modelParams = (new ParseModel($config))->parseModelTable($modelClass,$classReflect,$methodName);
+                return [$field=>$modelParams];
+            }else{
                 // 类ref引用
-                $methodName   = trim($methodName);
-                $refMethod    = $classReflect->getMethod($methodName);
-                $res = $this->getMethodAnnotation($refMethod,$field);
-                return $res;
+                if (!empty($methodName)){
+                    // 指定引入类的方法注解
+                    $methodName   = trim($methodName);
+                    $refMethod    = $classReflect->getMethod($methodName);
+                    $res = $this->getMethodAnnotation($refMethod,$field);
+                    return $res;
+                }else{
+                    // 类的参数property
+                    $private_properties = (new ParseAnnotation($config))->getClassPropertiesy($classReflect);
+                    return [$field=>$private_properties];
+                }
             }
-            // 模型解析
-            $modelParams = (new ParseModel($config))->parseModelTable($modelClass,$classReflect,$methodName);
-            return [$field=>$modelParams];
 
         } catch (\ReflectionException $e) {
             throw new ErrorException($e->getMessage());
         }
-
-
     }
 
 
 
     public function handleRefData($annotation,$refParams, string $field): array
     {
-
         // 过滤field
         if (!empty($annotation['field'])) {
             $refParams = static::filterParamsField($refParams, $annotation['field'], 'field');
@@ -664,7 +748,7 @@ class ParseApiDetail
                 $fieldArr = [$fields];
             }
         }else if (!empty($fields) && is_array($fields)){
-            if (array_key_first($fields)=="name"){
+            if (Helper::arrayKeyFirst($fields)=="name"){
                 $fieldArr = $fields['name'];
             }else{
                 $fieldArr = $fields;

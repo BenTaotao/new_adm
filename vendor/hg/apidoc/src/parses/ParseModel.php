@@ -29,7 +29,12 @@ class ParseModel
         try {
             // 获取所有模型属性
             $propertys = $classReflect->getDefaultProperties();
-            $table =$this->getTableDocument($model, $propertys);
+            $tableName = $model->getTable();
+            $configTablePrefix = !empty($config['database']) && !empty($config['database']['prefix'])?$config['database']['prefix']:"";
+            if (!empty($configTablePrefix) && strpos($tableName, $configTablePrefix) === false){
+                $tableName = $configTablePrefix.$model->getTable();
+            }
+            $table =$this->getTableDocument($tableName, $propertys);
             if (empty($methodName)){
                 return $table;
             }
@@ -44,7 +49,7 @@ class ParseModel
             }
             if (!empty($annotations['addField'])){
                 $addFieldData = [];
-                if (is_int(array_key_first($annotations['addField']))){
+                if (is_int(Helper::arrayKeyFirst($annotations['addField']))){
                     $addFieldData = $annotations['addField'];
                 }else{
                     $addFieldData = [$annotations['addField']];
@@ -61,6 +66,13 @@ class ParseModel
                     }
                     if (!empty($fieldItem['md'])){
                         $fieldItem['md'] = ParseMarkdown::getContent("",$fieldItem['md']);
+                    }
+                    // 自定义解析
+                    if (!empty($config['parsesAnnotation'])){
+                        $callback = $config['parsesAnnotation']($fieldItem);
+                        if (!empty($callback)){
+                            $fieldItem = $callback;
+                        }
                     }
                     $addFieldList[]=$fieldItem;
                 }
@@ -94,23 +106,18 @@ class ParseModel
 
     /**
      * 获取模型注解数据
-     * @param $model
+     * @param $tableName
      * @param $propertys
      * @return array
      */
-    protected function getTableDocument($model,array $propertys):array
+    public function getTableDocument($tableName,array $propertys):array
     {
         $config = $this->config;
         $fieldComment = [];
         if (empty($config['database_query_function'])){
             throw new ErrorException("not datatable_query_function config");
         }
-        $tableName = $model->getTable();
-        $configTablePrefix = !empty($config['database']) && !empty($config['database']['prefix'])?$config['database']['prefix']:"";
-        if (!empty($configTablePrefix) && strpos($tableName, $configTablePrefix) === false){
-            $tableName = $configTablePrefix.$model->getTable();
-        }
-        $tableColumns = $config['database_query_function']("SHOW FULL COLUMNS FROM " . $tableName);
+        $tableColumns = $config['database_query_function']("SHOW FULL COLUMNS FROM `" . $tableName."`");
         foreach ($tableColumns as $columns) {
             $columns = Helper::objectToArray($columns);
             $name = $columns['Field'];
